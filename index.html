@@ -75,7 +75,7 @@
             border-right: 1px solid #c5ad90;
             position: relative;
             box-shadow: 
-                1px 2px 3px rgba(0,0,0,0.7), /* Kontakt */
+                0 1px 2px rgba(0,0,0,0.9), /* Skarp Kontakt */
                 0 10px 20px rgba(0,0,0,0.3), /* Mellan */
                 0 30px 60px rgba(0,0,0,0.2), /* Ambient */
                 inset 0 0 60px rgba(139, 69, 19, 0.15); /* Smuts/slitage inuti */
@@ -85,9 +85,8 @@
             z-index: 10;
             transform-style: preserve-3d;
             mix-blend-mode: multiply;
-            filter: brightness(0.3) sepia(0.6) contrast(1.2); /* Starta mörkt (belyst av stearinljus) */
+            filter: brightness(0.25) sepia(0.7) contrast(1.3); /* Starta mörkt (belyst av stearinljus) */
             animation: folderSwitchOn 3s 3s forwards; /* Blixtra till vid 3s */
-            backface-visibility: hidden;
         }
 
         /* Mappens "Tab" (Fliken där uppe) */
@@ -102,6 +101,7 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
             border-radius: 6px 6px 0 0;
             box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.1);
+            backface-visibility: hidden; /* Dölj baksidan av fliken vid rotation */
         }
 
         /* Insidan av pärmen (Baksidan av framsidan) */
@@ -115,7 +115,7 @@
             background-color: #dcbfa3;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
             transform: rotateY(180deg);
-            backface-visibility: hidden;
+            backface-visibility: hidden; /* Syns bara när den är vänd mot kameran */
             border-radius: 4px;
             box-shadow: inset 0 0 60px rgba(139, 69, 19, 0.15);
         }
@@ -174,15 +174,15 @@
 
         @keyframes switchOn {
             0% { filter: brightness(0.15) sepia(0.5) hue-rotate(200deg) blur(1px); }
-            1% { filter: brightness(1.3) sepia(0.2) hue-rotate(0deg) blur(0px); } /* THE IGNITION (Flash) */
-            5% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); } /* Stabilisering */
+            /* Mjukare uppvärmning av glödtråden */
+            5% { filter: brightness(0.6) sepia(0.4) hue-rotate(50deg) blur(0.5px); } 
+            10% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); } 
             100% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); }
         }
 
         @keyframes folderSwitchOn {
-            0% { filter: brightness(0.3) sepia(0.6) contrast(1.2); }
-            1% { filter: brightness(1.4) sepia(0.1) contrast(1.0); } /* Blixt */
-            5% { filter: sepia(0.3) contrast(1.1); } /* Normal */
+            0% { filter: brightness(0.25) sepia(0.7) contrast(1.3); }
+            10% { filter: sepia(0.3) contrast(1.1); } /* Normal */
             100% { filter: sepia(0.3) contrast(1.1); }
         }
 
@@ -479,25 +479,25 @@
             /* Mjukare orange */
             background: radial-gradient(circle, rgba(255, 150, 50, 0.3) 0%, transparent 70%);
             filter: blur(80px);
-            mix-blend-mode: hard-light; /* Starkare blandning för att färga mappen */
-            opacity: 0.8; /* Synlig direkt i mörkret */
+            mix-blend-mode: color-dodge; /* Lyser upp fibrerna */
+            opacity: 1; /* Ökad intensitet */
             pointer-events: none;
             z-index: 20; /* Ligger över mappen (z-index 15) */
             animation: candle-flicker 2s infinite;
         }
 
         @keyframes candle-flicker {
-            0% { opacity: 0.4; transform: translate(0, 0) scale(1); }
-            10% { opacity: 0.5; transform: translate(-5px, 3px) scale(1.2); }
-            20% { opacity: 0.35; transform: translate(3px, -5px) scale(0.85); }
-            30% { opacity: 0.45; transform: translate(-8px, 2px) scale(1.3); }
-            40% { opacity: 0.4; transform: translate(5px, 5px) scale(0.95); }
-            50% { opacity: 0.5; transform: translate(-3px, -3px) scale(1.4); }
-            60% { opacity: 0.3; transform: translate(6px, 0) scale(0.8); }
-            70% { opacity: 0.45; transform: translate(-5px, 5px) scale(1.25); }
-            80% { opacity: 0.4; transform: translate(2px, -4px) scale(1.1); }
-            90% { opacity: 0.35; transform: translate(-2px, 2px) scale(0.9); }
-            100% { opacity: 0.4; transform: translate(0, 0) scale(1); }
+            0% { opacity: 0.8; transform: translate(0, 0) scale(1); }
+            10% { opacity: 1; transform: translate(-5px, 3px) scale(1.2); }
+            20% { opacity: 0.7; transform: translate(3px, -5px) scale(0.85); }
+            30% { opacity: 0.9; transform: translate(-8px, 2px) scale(1.3); }
+            40% { opacity: 0.8; transform: translate(5px, 5px) scale(0.95); }
+            50% { opacity: 1; transform: translate(-3px, -3px) scale(1.4); }
+            60% { opacity: 0.6; transform: translate(6px, 0) scale(0.8); }
+            70% { opacity: 0.9; transform: translate(-5px, 5px) scale(1.25); }
+            80% { opacity: 0.8; transform: translate(2px, -4px) scale(1.1); }
+            90% { opacity: 0.7; transform: translate(-2px, 2px) scale(0.9); }
+            100% { opacity: 0.8; transform: translate(0, 0) scale(1); }
         }
 
         /* --- RESPONSIVITET (Mobilanpassning) --- */
