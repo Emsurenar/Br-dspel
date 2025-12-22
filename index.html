@@ -621,7 +621,7 @@
         const missionSegments = [
             { text: "TOP SECRET // DIREKTIV #001\n\n" },
             { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: 1.7rem; font-weight: 800; display: block; margin: 15px 0; line-height: 1.2;" },
-            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nKODNAMN: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
+            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nKODNAMN: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
         ];
         
         let currentSegment = 0;
@@ -657,9 +657,9 @@
 
         // Koppla händelselyssnare för både klick och touch
         const dossier = document.getElementById('dossier');
-        dossier.addEventListener('click', openDossier);
+        document.addEventListener('click', openDossier);
         // Lägg till en passiv touchstart för att förbättra responsen på iOS
-        dossier.addEventListener('touchstart', function() {}, {passive: true});
+        document.addEventListener('touchstart', function() {}, {passive: true});
 
         // Funktion för att öppna mappen
         function openDossier() {
