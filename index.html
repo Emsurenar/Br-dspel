@@ -56,6 +56,7 @@
             animation: throwDown 0.6s cubic-bezier(0.6, 0.05, 0.2, 1) forwards;
             animation-delay: 3.2s; /* Vänta tills rummet tonat upp */
             transform-style: preserve-3d; /* För 3D-öppning */
+            z-index: 15; /* Säkerställ att den är klickbar */
         }
 
         .manila-folder {
@@ -472,7 +473,7 @@
             mix-blend-mode: screen; /* Mjukare blandning */
             opacity: 0.4;
             pointer-events: none;
-            z-index: 20;
+            z-index: 20; /* Ligger över mappen (z-index 15) */
             animation: candle-flicker 2s infinite;
         }
 
@@ -564,7 +565,7 @@
         <div class="distant-light"></div>
         
         <!-- Mappen -->
-        <div class="dossier-container" id="dossier" onclick="openDossier()">
+        <div class="dossier-container" id="dossier">
             
             <!-- Baksidan av mappen (ligger underst) -->
             <div class="folder-back"></div>
@@ -636,10 +637,14 @@
             setTimeout(() => { puff.remove(); }, 5000);
         }
 
+        // Koppla händelselyssnare för både klick och touch
+        const dossier = document.getElementById('dossier');
+        dossier.addEventListener('click', openDossier);
+        // Lägg till en passiv touchstart för att förbättra responsen på iOS
+        dossier.addEventListener('touchstart', function() {}, {passive: true});
+
         // Funktion för att öppna mappen
         function openDossier() {
-            const dossier = document.getElementById('dossier');
-            
             // Förhindra dubbelklick
             if (dossier.classList.contains('open')) return;
 
