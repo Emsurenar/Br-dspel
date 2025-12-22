@@ -507,7 +507,7 @@
             }
 
             .dossier-container {
-                width: 100%;
+                width: 90%; /* Lite luft på sidorna för skuggor */
                 max-width: 340px; /* 1. BEGRÄNSA BREDDEN */
                 height: 520px; /* Anpassa höjden för proportionerna */
                 top: 0; /* 2. CENTRERING (nollställ desktop offset) */
@@ -570,6 +570,19 @@
             .dossier-container:not(.open) .manila-folder {
                 animation: pulseHint 2s infinite ease-in-out;
                 will-change: transform;
+            }
+
+            /* Anpassa ljuset för mindre skärmar så det inte tar över */
+            .distant-light {
+                width: 600px;
+                height: 600px;
+                top: -200px;
+                right: -200px;
+            }
+
+            /* Justera vinjetten för porträttläge */
+            #vignette {
+                background: radial-gradient(circle, transparent 25%, #000 110%);
             }
         }
 
