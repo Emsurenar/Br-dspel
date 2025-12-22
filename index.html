@@ -498,17 +498,20 @@
         /* --- RESPONSIVITET (Mobilanpassning) --- */
         @media (max-width: 768px) {
             :root {
-                --dossier-scale: 0.75; /* Skala ner mappen proportionerligt */
+                --dossier-scale: 1; /* Återställ skala, vi styr storlek med width istället */
             }
 
             .dossier-container {
-                /* Behåll fasta dimensioner men skala visuellt */
-                top: 0; /* Låt flexbox centrera den helt */
-                margin: auto;
+                width: 100%;
+                max-width: 340px; /* 1. BEGRÄNSA BREDDEN */
+                height: 520px; /* Anpassa höjden för proportionerna */
+                top: 0; /* 2. CENTRERING (nollställ desktop offset) */
+                left: 0;
+                margin: auto; /* Centrera i flex-föräldern */
             }
 
             .paper-sheet {
-                padding: 25px; /* Säkerställ att text inte klipps av rivna kanter */
+                padding: 15px; /* 3. INNEHÅLLSANPASSNING (Mindre padding) */
                 -webkit-overflow-scrolling: touch; /* Mjuk scroll på iOS */
             }
 
@@ -542,7 +545,7 @@
             }
 
             .mission-form iframe {
-                height: 380px; /* Maximera höjden för formuläret */
+                height: 320px; /* Anpassa höjden så den ryms i den mindre mappen */
             }
 
             .submit-stamp {
