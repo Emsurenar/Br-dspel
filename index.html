@@ -24,8 +24,6 @@
             align-items: center;
             perspective: 1000px;
             overflow: hidden;
-            opacity: 0;
-            animation: fadeInRoom 1s ease-in-out forwards; /* Snabbare ambient fade-in */
         }
 
         .desk-surface::before {
@@ -40,8 +38,8 @@
             transform: scale(1.25); /* Zooma in */
             transition: background 1.5s ease;
             z-index: -1;
-            filter: brightness(0.3); /* Starta mörkt (ambient) */
-            animation: roomLightUp 0.1s 1.5s forwards; /* Tänd lampan vid 1.5s */
+            filter: brightness(0.15) sepia(0.5) hue-rotate(200deg) blur(1px); /* Nattläge */
+            animation: switchOn 3s 1.5s forwards; /* Tänd lampan vid 1.5s */
         }
 
         :root {
@@ -187,24 +185,25 @@
             }
         }
 
-        @keyframes fadeInRoom {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes switchOn {
+            0% { filter: brightness(0.15) sepia(0.5) hue-rotate(200deg) blur(1px); }
+            1% { filter: brightness(1.3) sepia(0.2) hue-rotate(0deg) blur(0px); } /* THE IGNITION (Flash) */
+            5% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); } /* Stabilisering */
+            100% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); }
         }
 
-        @keyframes roomLightUp {
-            to { filter: brightness(1); }
+        @keyframes switchOnVignette {
+            0% { opacity: 0.8; } /* Mörka hörn i natten */
+            1% { opacity: 0; } /* Ljuset blåser bort skuggorna */
+            5% { opacity: 0.2; } /* Normal vinjett */
+            100% { opacity: 0.2; }
         }
 
-        @keyframes vignetteIgnition {
+        @keyframes switchOnLight {
             0% { opacity: 0; }
-            20% { opacity: 0.8; } /* Blixt */
-            40% { opacity: 0.1; }
-            60% { opacity: 0.6; } /* Blixt */
-            100% { opacity: 0.2; } /* Stabil nivå */
-        }
-        @keyframes lightIgnition {
-            to { opacity: 0.4; }
+            1% { opacity: 0.8; } /* Reflektions-blixt */
+            5% { opacity: 0.4; } /* Normal reflektion */
+            100% { opacity: 0.4; }
         }
 
         /* --- 6. INNEHÅLL (Papper & Video) --- */
@@ -422,8 +421,8 @@
             pointer-events: none;
             background: radial-gradient(circle, transparent 40%, #000 140%);
             z-index: 200; /* Ligger över allt */
-            opacity: 0; /* Släckt initialt */
-            animation: vignetteIgnition 0.3s 1.5s forwards, flicker 4s 1.8s infinite;
+            opacity: 0.8; /* Mörkt rum initialt */
+            animation: switchOnVignette 3s 1.5s forwards, flicker 4s 1.8s infinite;
         }
 
         #cold-overlay {
@@ -494,10 +493,10 @@
             background: radial-gradient(circle, rgba(255, 150, 50, 0.3) 0%, transparent 70%);
             filter: blur(80px);
             mix-blend-mode: screen; /* Mjukare blandning */
-            opacity: 0; /* Släckt initialt */
+            opacity: 0; /* Släckt i natten */
             pointer-events: none;
             z-index: 20; /* Ligger över mappen (z-index 15) */
-            animation: lightIgnition 0.3s 1.5s forwards, candle-flicker 2s 1.8s infinite;
+            animation: switchOnLight 3s 1.5s forwards, candle-flicker 2s 1.8s infinite;
         }
 
         @keyframes candle-flicker {
