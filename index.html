@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOP SECRET INVITATION</title>
+    <style>
+        /* --- 1. BAKGRUND & RUMMET (The Desk) --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Förhindra scroll under animationen */
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #2c1e1e; /* Mörk grundfärg */
+        }
+
+        .desk-surface {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInRoom 3s ease-in-out forwards;
+        }
+
+        .desk-surface::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('Bakgrund.jpg') no-repeat center center;
+            background-size: cover;
+            transform: scale(1.25); /* Zooma in */
+            transition: background 1.5s ease;
+            z-index: -1;
+        }
+
+        /* --- 2. MAPPEN (The Asset) --- */
+        .dossier-container {
+            position: relative;
+            width: 450px;
+            height: 600px;
+            cursor: pointer;
+            
+            top: 70px; /* Justerad position */
+            /* Startposition för animationen (utanför skärmen) */
+            opacity: 0;
+            transform: scale(5) rotate(20deg);
+            animation: throwDown 0.6s cubic-bezier(0.6, 0.05, 0.2, 1) forwards;
+            animation-delay: 3.2s; /* Vänta tills rummet tonat upp */
+            transform-style: preserve-3d; /* För 3D-öppning */
+        }
+
+        .manila-folder {
+            width: 100%;
+            height: 100%;
+            background-color: #dcbfa3;
+            background-image: 
+                linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(0,0,0,0.1)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+            border-radius: 4px;
+            border-bottom: 2px solid #bba388;
+            border-right: 1px solid #c5ad90;
+            position: relative;
+            box-shadow: 
+                1px 2px 3px rgba(0,0,0,0.7), /* Kontakt */
+                0 10px 20px rgba(0,0,0,0.3), /* Mellan */
+                0 30px 60px rgba(0,0,0,0.2), /* Ambient */
+                inset 0 0 60px rgba(139, 69, 19, 0.15); /* Smuts/slitage inuti */
+            transform-origin: center;
+            transition: transform 0.2s ease, transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); /* Längre tid för öppning */
+            transform-origin: left center; /* Öppnas som en bok */
+            z-index: 10;
+            transform-style: preserve-3d;
+            mix-blend-mode: multiply;
+            filter: sepia(0.3) contrast(1.1);
+        }
+
+        /* Mappens "Tab" (Fliken där uppe) */
+        .manila-folder::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #dcbfa3;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+            border-radius: 6px 6px 0 0;
+            box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.1);
+        }
+
+        /* Insidan av pärmen (Baksidan av framsidan) */
+        .manila-folder::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #dcbfa3;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            border-radius: 4px;
+            box-shadow: inset 0 0 60px rgba(139, 69, 19, 0.15);
+        }
+
+        /* Hover effekt på mappen */
+        .dossier-container:hover .manila-folder {
+            transform: scale(1.01);
+        }
+
+        /* Öppna mappen */
+        .dossier-container.open .manila-folder {
+            transform: rotateY(-175deg); /* Slå upp pärmen */
+        }
+
+        /* --- 3. STÄMPLAR --- */
+        .stamp {
+            position: absolute;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 4px solid;
+            padding: 10px 15px;
+            opacity: 0.7;
+            mix-blend-mode: multiply; /* Får det att se ut som bläck på papper */
+            pointer-events: none; /* Klick går igenom stämpeln */
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; /* Ojämn form */
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="5" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.6"/></svg>');
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="5" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.6"/></svg>');
+        }
+
+        .top-secret {
+            color: #b30000;
+            border-color: #b30000;
+            font-size: 2rem;
+            top: 20%;
+            left: 10%;
+            transform: rotate(-15deg);
+            border-radius: 8px;
+        }
+
+        .eyes-only {
+            color: #8b0000;
+            border-color: #8b0000;
+            font-size: 1.2rem;
+            bottom: 25%;
+            right: 10%;
+            transform: rotate(10deg);
+            border-style: double;
+            border-width: 6px;
+        }
+
+        /* --- 5. ANIMATION --- */
+        @keyframes throwDown {
+            0% {
+                opacity: 0;
+                transform: scale(4) rotate(45deg); /* Starta stor (nära kameran) */
+            }
+            50% {
+                opacity: 1;
+                transform: scale(0.9) rotate(-3deg); /* Dunsa i bordet */
+            }
+            75% {
+                transform: scale(1.02) rotate(4deg); /* Studsa upp lite */
+            }
+            100% {
+                transform: scale(1) rotate(2deg); /* Landa */
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInRoom {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- 6. INNEHÅLL (Papper & Video) --- */
+        .folder-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #cbb685; /* Mörkare insida av mappen */
+            border-radius: 4px;
+            z-index: 1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+            mix-blend-mode: multiply; /* Låt bordet lysa igenom mappen */
+        }
+
+        .paper-sheet {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            background-color: #f4f1ea; /* Gammalt papper */
+            /* Paper grain texture */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"/></svg>');
+            
+            /* Djup & Skugga (Lager 1: Kontakt, Lager 2: Ambiens) */
+            box-shadow: 
+                0 1px 3px rgba(0,0,0,0.8), 
+                0 10px 30px rgba(0,0,0,0.5);
+            
+            z-index: 2;
+            padding: 35px; /* Mer padding för att kompensera för rivna kanter */
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Tillåt scroll om innehållet är långt */
+            scrollbar-width: none; /* Dölj scrollbar Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            opacity: 0;
+            transition: opacity 1s ease 0.5s; /* Tona in efter att mappen börjat öppnas */
+            
+            /* Textur & Form */
+            transform: rotate(-2deg);
+            
+            /* Integration i rummet */
+            filter: sepia(0.4) contrast(1.2) brightness(0.9);
+            mix-blend-mode: multiply; /* Låt trästrukturen lysa igenom */
+            
+            /* Slitna kanter (Jagged edges) */
+            clip-path: polygon(
+                1% 1%, 5% 0%, 10% 1%, 15% 0%, 20% 1%, 25% 0%, 30% 1%, 35% 0%, 40% 1%, 45% 0%, 50% 1%, 55% 0%, 60% 1%, 65% 0%, 70% 1%, 75% 0%, 80% 1%, 85% 0%, 90% 1%, 95% 0%, 99% 1%,
+                100% 5%, 99% 10%, 100% 15%, 99% 20%, 100% 25%, 99% 30%, 100% 35%, 99% 40%, 100% 45%, 99% 50%, 100% 55%, 99% 60%, 100% 65%, 99% 70%, 100% 75%, 99% 80%, 100% 85%, 99% 90%, 100% 95%, 99% 99%,
+                95% 100%, 90% 99%, 85% 100%, 80% 99%, 75% 100%, 70% 99%, 65% 100%, 60% 99%, 55% 100%, 50% 99%, 45% 100%, 40% 99%, 35% 100%, 30% 99%, 25% 100%, 20% 99%, 15% 100%, 10% 99%, 5% 100%, 1% 99%,
+                0% 95%, 1% 90%, 0% 85%, 1% 80%, 0% 75%, 1% 70%, 0% 65%, 1% 60%, 0% 55%, 1% 50%, 0% 45%, 1% 40%, 0% 35%, 1% 30%, 0% 25%, 1% 20%, 0% 15%, 1% 10%, 0% 5%
+            );
+        }
+        
+        .dossier-container.open .paper-sheet {
+            opacity: 1;
+        }
+        
+        .paper-sheet::-webkit-scrollbar {
+            display: none; /* Dölj scrollbar Chrome/Safari */
+        }
+
+        .typewriter-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #222;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            white-space: pre-wrap; /* Bevara radbrytningar */
+            text-shadow: 0 0 1px rgba(0,0,0,0.1); /* Ojämn svärta */
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: #222;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Visa innehåll när texten är klar */
+        .paper-sheet.content-loaded .mission-form {
+            opacity: 1;
+        }
+
+        /* --- 7. FORMULÄR (RSVP Protocol) --- */
+        .mission-form {
+            margin-top: 30px;
+            width: 100%;
+            border-top: 2px dashed #999;
+            padding-top: 20px;
+            opacity: 0; /* Göm formuläret initialt */
+            transition: opacity 2s ease 0.5s; /* Lite fördröjning efter videon */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: #444;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #222;
+            background: transparent;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            color: #111;
+            outline: none;
+            padding: 5px 0;
+            border-radius: 0;
+        }
+
+        .submit-stamp {
+            margin-top: 25px;
+            width: 100%;
+            padding: 15px;
+            border: 4px solid #b30000;
+            color: #b30000;
+            background: transparent;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transform: rotate(-1deg);
+            transition: transform 0.2s, background 0.2s;
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.8"/></svg>');
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.8"/></svg>');
+        }
+
+        .submit-stamp:hover {
+            transform: rotate(0deg) scale(1.02);
+            background: rgba(179, 0, 0, 0.05);
+        }
+
+        /* Success Stamp Animation */
+        .confidential-stamp-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(3);
+            opacity: 0;
+            border: 6px solid #b30000;
+            color: #b30000;
+            padding: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 100;
+            mix-blend-mode: multiply;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .stamp-visible {
+            opacity: 0.9;
+            transform: translate(-50%, -50%) scale(1) rotate(-15deg);
+        }
+
+        /* --- 8. RÖK-EFFEKT (Cigarette Smoke) --- */
+        #smoke-container {
+            position: absolute;
+            /* Justera dessa för att passa askfatet i bakgrundsbilden */
+            top: 13%; 
+            left: 64%;
+            width: 10px;
+            height: 10px;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .smoke-puff {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, rgba(200, 200, 220, 0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(3px);
+            opacity: 0;
+            mix-blend-mode: screen;
+            animation: smokeRise 5s ease-out forwards;
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0; transform: translate(-50%, 0) scale(0.5) rotate(var(--rot)); }
+            20% { opacity: 0.8; }
+            100% { opacity: 0; transform: translate(var(--tx), -250px) scale(8) rotate(var(--rot-end)); }
+        }
+
+        /* --- 9. AMBIENT FLICKER & COLD DEATH (Trasig lampa) --- */
+        #vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle, transparent 40%, #000 140%);
+            z-index: 200; /* Ligger över allt */
+            opacity: 0.2; /* Grundnivå */
+            animation: flicker 4s infinite;
+        }
+
+        #cold-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-color: rgba(10, 20, 30, 0.6); /* Mörkblå/grå */
+            mix-blend-mode: hard-light; /* Kall, död ton */
+            z-index: 190; /* Ligger under vinjetten men över rummet */
+            opacity: 0;
+            animation: cold-flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 28% { opacity: 0.2; }
+            /* Kluster 1: Snabbt dubbel-blink */
+            28.1% { opacity: 0.95; }
+            28.2% { opacity: 0.1; }
+            28.3% { opacity: 0.95; }
+            28.4%, 58% { opacity: 0.2; }
+            
+            /* Kluster 2: Aggressivt anfall (Strobe) */
+            58.1% { opacity: 0.95; }
+            58.2% { opacity: 0.0; }
+            58.3% { opacity: 0.95; }
+            58.4% { opacity: 0.0; }
+            58.5% { opacity: 0.95; }
+            58.6%, 90% { opacity: 0.2; }
+            
+            /* Kluster 3: Dödsryckning */
+            90.1% { opacity: 0.95; }
+            90.2% { opacity: 0.1; }
+            90.3% { opacity: 0.95; }
+            94% { opacity: 0.95; } /* Håll mörkt en stund */
+            94.1%, 100% { opacity: 0.2; }
+        }
+
+        @keyframes cold-flicker {
+            0%, 28% { opacity: 0; }
+            28.1% { opacity: 1; }
+            28.2% { opacity: 0; }
+            28.3% { opacity: 1; }
+            28.4%, 58% { opacity: 0; }
+            58.1% { opacity: 1; }
+            58.2% { opacity: 0; }
+            58.3% { opacity: 1; }
+            58.4% { opacity: 0; }
+            58.5% { opacity: 1; }
+            58.6%, 90% { opacity: 0; }
+            90.1% { opacity: 1; }
+            90.2% { opacity: 0; }
+            90.3% { opacity: 1; }
+            94% { opacity: 1; }
+            94.1%, 100% { opacity: 0; }
+        }
+
+        /* --- 10. DISTANT LIGHT (Candle Reflection) --- */
+        .distant-light {
+            position: absolute;
+            top: -400px;
+            right: -400px;
+            width: 1000px;
+            height: 1000px;
+            /* Mjukare orange */
+            background: radial-gradient(circle, rgba(255, 150, 50, 0.3) 0%, transparent 70%);
+            filter: blur(80px);
+            mix-blend-mode: screen; /* Mjukare blandning */
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 20;
+            animation: candle-flicker 2s infinite;
+        }
+
+        @keyframes candle-flicker {
+            0% { opacity: 0.4; transform: translate(0, 0) scale(1); }
+            10% { opacity: 0.5; transform: translate(-5px, 3px) scale(1.2); }
+            20% { opacity: 0.35; transform: translate(3px, -5px) scale(0.85); }
+            30% { opacity: 0.45; transform: translate(-8px, 2px) scale(1.3); }
+            40% { opacity: 0.4; transform: translate(5px, 5px) scale(0.95); }
+            50% { opacity: 0.5; transform: translate(-3px, -3px) scale(1.4); }
+            60% { opacity: 0.3; transform: translate(6px, 0) scale(0.8); }
+            70% { opacity: 0.45; transform: translate(-5px, 5px) scale(1.25); }
+            80% { opacity: 0.4; transform: translate(2px, -4px) scale(1.1); }
+            90% { opacity: 0.35; transform: translate(-2px, 2px) scale(0.9); }
+            100% { opacity: 0.4; transform: translate(0, 0) scale(1); }
+        }
+
+        /* --- RESPONSIVITET (Mobilanpassning) --- */
+        @media (max-width: 768px) {
+            .dossier-container {
+                width: 90vw;
+                height: 85vh;
+                top: 2vh;
+            }
+
+            .paper-sheet {
+                padding: 20px;
+            }
+
+            .typewriter-text {
+                font-size: 0.75rem;
+            }
+
+            /* Hantera den stora rubriken i JS */
+            #typewriter-container span {
+                font-size: 1.2rem !important;
+            }
+
+            .stamp.top-secret {
+                font-size: 1.5rem;
+                border-width: 3px;
+                left: 5%;
+                top: 15%;
+            }
+
+            .stamp.eyes-only {
+                font-size: 1rem;
+                border-width: 4px;
+                right: 5%;
+                bottom: 20%;
+            }
+
+            .mission-form iframe {
+                height: 300px;
+            }
+
+            .submit-stamp {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Vinjett / Lampa -->
+    <div id="vignette"></div>
+    <div id="cold-overlay"></div>
+
+    <!-- Skrivbordet -->
+    <div class="desk-surface" id="desk">
+        
+        <!-- Sekundär ljuskälla -->
+        <div class="distant-light"></div>
+        
+        <!-- Mappen -->
+        <div class="dossier-container" id="dossier" onclick="openDossier()">
+            
+            <!-- Baksidan av mappen (ligger underst) -->
+            <div class="folder-back"></div>
+
+            <!-- Pappret inuti -->
+            <div class="paper-sheet">
+                <div id="typewriter-container" class="typewriter-text"></div>
+
+                <!-- RSVP Formulär -->
+                <div class="mission-form">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Läser in…</iframe>
+                    <button onclick="triggerDestructionSequence()" class="submit-stamp">BEKRÄFTA INSKICKAT & FÖRSTÖR</button>
+                </div>
+                
+                <!-- Success Stamp -->
+                <div id="confidential-stamp" class="confidential-stamp-overlay">CONFIDENTIAL</div>
+            </div>
+
+            <!-- Framsidan (Locket) -->
+            <div class="manila-folder">
+                <!-- Stämplar -->
+                <div class="stamp top-secret">TOP SECRET</div>
+                <div class="stamp eyes-only">EYES ONLY</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Rök-effekt -->
+    <div id="smoke-container"></div>
+
+    <script>
+        // Texten som ska skrivas ut
+        const missionSegments = [
+            { text: "TOP SECRET // DIREKTIV #001\n\n" },
+            { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: 1.7rem; font-weight: 800; display: block; margin: 15px 0; line-height: 1.2;" },
+            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nKODNAMN: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
+        ];
+        
+        let currentSegment = 0;
+        let currentChar = 0;
+        let currentSpan = null;
+        let isTyping = false;
+
+        // Starta rök-generatorn
+        setInterval(createSmoke, 100);
+
+        function createSmoke() {
+            const container = document.getElementById('smoke-container');
+            const puff = document.createElement('span');
+            puff.classList.add('smoke-puff');
+            
+            // Slumpmässig drift i sidled (--tx)
+            const tx = (Math.random() - 0.5) * 200; // Ökad spridning
+            puff.style.setProperty('--tx', `${tx}px`);
+            
+            // Slumpmässig rotation
+            const rot = Math.random() * 360;
+            const rotEnd = rot + (Math.random() * 180 - 90);
+            puff.style.setProperty('--rot', `${rot}deg`);
+            puff.style.setProperty('--rot-end', `${rotEnd}deg`);
+            
+            container.appendChild(puff);
+
+            // Ta bort elementet när animationen är klar
+            setTimeout(() => { puff.remove(); }, 5000);
+        }
+
+        // Funktion för att öppna mappen
+        function openDossier() {
+            const dossier = document.getElementById('dossier');
+            
+            // Förhindra dubbelklick
+            if (dossier.classList.contains('open')) return;
+
+            console.log('Access Granted');
+            
+            // 1. Öppna mappen (animation)
+            setTimeout(() => {
+                dossier.classList.add('open');
+            }, 500);
+
+            // 2. Starta skrivmaskin
+            setTimeout(() => {
+                if (!isTyping) {
+                    isTyping = true;
+                    typeWriter();
+                }
+            }, 1500);
+        }
+
+        function typeWriter() {
+            if (currentSegment < missionSegments.length) {
+                const segment = missionSegments[currentSegment];
+                const container = document.getElementById("typewriter-container");
+                
+                // Skapa element för stylad text om vi är i början av segmentet
+                if (segment.style && currentChar === 0) {
+                    currentSpan = document.createElement('span');
+                    currentSpan.style.cssText = segment.style;
+                    container.appendChild(currentSpan);
+                }
+
+                const char = segment.text.charAt(currentChar);
+                
+                if (segment.style) {
+                    currentSpan.textContent += char;
+                } else {
+                    // För vanlig text, lägg till i containern (effektivt sätt att hantera textnoder)
+                    if (container.lastChild && container.lastChild.nodeType === 3) {
+                        container.lastChild.nodeValue += char;
+                    } else {
+                        container.appendChild(document.createTextNode(char));
+                    }
+                }
+                
+                // Snabbare skrivmaskin (oregelbunden rytm)
+                let delay = Math.random() * 30 + 20; 
+                
+                // Gör "OPERATION"-delen långsammare och mer spänningsfull
+                if (currentSegment === 1) {
+                    delay = Math.random() * 120 + 80;
+                }
+                
+                // Pausa vid punkter och kommatecken
+                if (char === '.' || char === '!' || char === '?') delay += 200;
+                if (char === ',') delay += 100;
+                if (char === '\n') delay += 150;
+
+                // Slumpmässig "tankepaus"
+                if (Math.random() > 0.98) delay += 300;
+
+                currentChar++;
+                if (currentChar >= segment.text.length) {
+                    currentSegment++;
+                    currentChar = 0;
+                    currentSpan = null;
+                }
+
+                setTimeout(typeWriter, delay);
+            } else {
+                // Visa videon och formuläret när texten är klar
+                document.querySelector('.paper-sheet').classList.add('content-loaded');
+            }
+        }
+
+        function triggerDestructionSequence() {
+            // 1. Stämpla dokumentet
+            const stamp = document.getElementById('confidential-stamp');
+            stamp.classList.add('stamp-visible');
+
+            // 2. Ändra texten efter en kort stund
+            setTimeout(() => {
+                const container = document.querySelector('.paper-sheet');
+                // Rensa innehållet och visa meddelande
+                container.innerHTML = `
+                    <div style="display:flex; height:100%; justify-content:center; align-items:center; text-align:center; flex-direction:column;">
+                        <h2 style="color:#b30000; border: 4px solid #b30000; padding: 20px; transform: rotate(-5deg);">IDENTITET BEKRÄFTAD</h2>
+                        <p style="margin-top: 20px; font-weight:bold;">DITT DELTAGANDE HAR REGISTRERATS. ÄT UPP DETTA DOKUMENT OM <span id="countdown">5</span> SEKUNDER.</p>
+                    </div>
+                `;
+
+                let timeLeft = 5;
+                const countdownEl = document.getElementById('countdown');
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    if (countdownEl) countdownEl.innerText = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        document.body.innerHTML = '';
+                        document.body.style.backgroundColor = 'black';
+                    }
+                }, 1000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
