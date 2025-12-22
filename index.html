@@ -25,7 +25,7 @@
             perspective: 1000px;
             overflow: hidden;
             opacity: 0;
-            animation: fadeInRoom 3s ease-in-out forwards;
+            animation: fadeInRoom 1s ease-in-out forwards; /* Snabbare ambient fade-in */
         }
 
         .desk-surface::before {
@@ -40,6 +40,8 @@
             transform: scale(1.25); /* Zooma in */
             transition: background 1.5s ease;
             z-index: -1;
+            filter: brightness(0.3); /* Starta mörkt (ambient) */
+            animation: roomLightUp 0.1s 1.5s forwards; /* Tänd lampan vid 1.5s */
         }
 
         :root {
@@ -58,9 +60,10 @@
             opacity: 0;
             transform: scale(5) rotate(20deg);
             animation: throwDown 0.6s cubic-bezier(0.6, 0.05, 0.2, 1) forwards;
-            animation-delay: 3.2s; /* Vänta tills rummet tonat upp */
+            animation-delay: 1.8s; /* Kasta in efter att lampan tänts */
             transform-style: preserve-3d; /* För 3D-öppning */
             z-index: 15; /* Säkerställ att den är klickbar */
+            will-change: transform;
         }
 
         .manila-folder {
@@ -86,6 +89,7 @@
             transform-style: preserve-3d;
             mix-blend-mode: multiply;
             filter: sepia(0.3) contrast(1.1);
+            backface-visibility: hidden;
         }
 
         /* Mappens "Tab" (Fliken där uppe) */
@@ -186,6 +190,21 @@
         @keyframes fadeInRoom {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @keyframes roomLightUp {
+            to { filter: brightness(1); }
+        }
+
+        @keyframes vignetteIgnition {
+            0% { opacity: 0; }
+            20% { opacity: 0.8; } /* Blixt */
+            40% { opacity: 0.1; }
+            60% { opacity: 0.6; } /* Blixt */
+            100% { opacity: 0.2; } /* Stabil nivå */
+        }
+        @keyframes lightIgnition {
+            to { opacity: 0.4; }
         }
 
         /* --- 6. INNEHÅLL (Papper & Video) --- */
@@ -403,8 +422,8 @@
             pointer-events: none;
             background: radial-gradient(circle, transparent 40%, #000 140%);
             z-index: 200; /* Ligger över allt */
-            opacity: 0.2; /* Grundnivå */
-            animation: flicker 4s infinite;
+            opacity: 0; /* Släckt initialt */
+            animation: vignetteIgnition 0.3s 1.5s forwards, flicker 4s 1.8s infinite;
         }
 
         #cold-overlay {
@@ -418,7 +437,7 @@
             mix-blend-mode: hard-light; /* Kall, död ton */
             z-index: 190; /* Ligger under vinjetten men över rummet */
             opacity: 0;
-            animation: cold-flicker 4s infinite;
+            animation: cold-flicker 4s 1.8s infinite;
         }
 
         @keyframes flicker {
@@ -475,10 +494,10 @@
             background: radial-gradient(circle, rgba(255, 150, 50, 0.3) 0%, transparent 70%);
             filter: blur(80px);
             mix-blend-mode: screen; /* Mjukare blandning */
-            opacity: 0.4;
+            opacity: 0; /* Släckt initialt */
             pointer-events: none;
             z-index: 20; /* Ligger över mappen (z-index 15) */
-            animation: candle-flicker 2s infinite;
+            animation: lightIgnition 0.3s 1.5s forwards, candle-flicker 2s 1.8s infinite;
         }
 
         @keyframes candle-flicker {
@@ -564,6 +583,7 @@
             /* Tap hint animation på mobil (pulserande effekt) */
             .dossier-container:not(.open) .manila-folder {
                 animation: pulseHint 2s infinite ease-in-out;
+                will-change: transform;
             }
         }
 
@@ -631,6 +651,7 @@
         let currentChar = 0;
         let currentSpan = null;
         let isTyping = false;
+        let autoOpenTimeout;
 
         // Starta rök-generatorn
         // Anpassa frekvens baserat på skärmstorlek för prestanda
@@ -663,9 +684,14 @@
         document.addEventListener('click', openDossier);
         // Lägg till en passiv touchstart för att förbättra responsen på iOS
         document.addEventListener('touchstart', function() {}, {passive: true});
+        
+        // Öppna automatiskt efter 5 sekunder om användaren inte agerar
+        autoOpenTimeout = setTimeout(openDossier, 5000);
 
         // Funktion för att öppna mappen
         function openDossier() {
+            clearTimeout(autoOpenTimeout); // Avbryt automatisk öppning om man klickar
+            
             // Förhindra dubbelklick
             if (dossier.classList.contains('open')) return;
 
