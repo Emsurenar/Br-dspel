@@ -265,7 +265,7 @@
             z-index: 2;
             padding: 5px 10px; /* Minimal padding för mobil */
             display: block; /* Ändrat för att hantera sidor */
-            overflow-y: scroll; /* Tillåt scroll om innehållet är långt */
+            overflow-y: hidden; /* Förhindra manuell scroll, endast bläddring */
             overflow-x: hidden; /* Lås horisontell scroll */
             scroll-snap-type: y mandatory; /* "Sidor" känsla vid scroll */
             scroll-behavior: smooth;
@@ -619,13 +619,13 @@
                 <!-- SIDA 1: Briefing -->
                 <div id="page-1" class="page-section">
                     <div id="typewriter-container" class="typewriter-text"></div>
-                    <div id="scroll-hint" class="scroll-hint" onclick="scrollToForm()">▼ NEXT PAGE ▼</div>
+                    <div id="scroll-hint" class="scroll-hint" onclick="scrollToForm()">▼ BLÄDDRA TILL NÄSTA SIDA ▼</div>
                 </div>
 
                 <!-- SIDA 2: Formulär -->
                 <div id="page-2" class="page-section">
                     <div class="mission-form">
-                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="320" height="454" frameborder="0" marginheight="0" marginwidth="0">Läser in …</iframe>
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="64" height="90.8" frameborder="0" marginheight="0" marginwidth="0">Läser in …</iframe>
                         <button onclick="triggerDestructionSequence()" class="submit-stamp">BEKRÄFTA INSKICKAT & FÖRSTÖR</button>
                     </div>
                 </div>
@@ -775,8 +775,7 @@
         }
 
         function scrollToForm() {
-            const paper = document.querySelector('.paper-sheet');
-            paper.scrollTop = paper.scrollHeight;
+            document.getElementById('page-2').scrollIntoView({ behavior: 'smooth' });
         }
 
         function triggerDestructionSequence() {
