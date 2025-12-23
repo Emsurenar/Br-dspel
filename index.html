@@ -264,10 +264,11 @@
             
             z-index: 2;
             padding: 5px 10px; /* Minimal padding för mobil */
-            display: flex;
-            flex-direction: column;
+            display: block; /* Ändrat för att hantera sidor */
             overflow-y: scroll; /* Tillåt scroll om innehållet är långt */
             overflow-x: hidden; /* Lås horisontell scroll */
+            scroll-snap-type: y mandatory; /* "Sidor" känsla vid scroll */
+            scroll-behavior: smooth;
             box-sizing: border-box;
             -webkit-overflow-scrolling: touch; /* Mjuk scroll på iOS */
             opacity: 0;
@@ -291,6 +292,26 @@
         .dossier-container.open .paper-sheet {
             opacity: 1;
         }
+
+        /* --- SID-STRUKTUR --- */
+        .page-section {
+            position: relative;
+            min-height: 100%; /* Varje sektion fyller hela pappret */
+            width: 100%;
+            scroll-snap-align: start; /* Snappa till början av varje sida */
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding-bottom: 10px;
+        }
+
+        #page-1 {
+            justify-content: space-between; /* Text i toppen, pil i botten */
+        }
+
+        #page-2 {
+            justify-content: flex-start;
+        }
         
         .typewriter-text {
             font-family: 'Courier New', Courier, monospace;
@@ -301,6 +322,20 @@
             white-space: pre-wrap; /* Bevara radbrytningar */
             text-shadow: 0 0 1px rgba(0,0,0,0.1); /* Ojämn svärta */
         }
+
+        .scroll-hint {
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #b30000;
+            cursor: pointer;
+            opacity: 0; /* Syns först när texten är klar */
+            transition: opacity 1s;
+            padding: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-5px);} 60% {transform: translateY(-3px);} }
 
         .cursor {
             display: inline-block;
@@ -313,8 +348,8 @@
         @keyframes blink { 50% { opacity: 0; } }
 
         /* Visa innehåll när texten är klar */
-        .paper-sheet.content-loaded .mission-form {
-            opacity: 1;
+        .paper-sheet.content-loaded .scroll-hint {
+            opacity: 1 !important;
         }
 
         @media (min-width: 1024px) {
@@ -330,21 +365,17 @@
 
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
-            margin-top: 2px; /* Minimalt avstånd */
             width: 100%;
-            border-top: 2px dashed #999;
-            padding-top: 10px;
-            opacity: 0; /* Göm formuläret initialt */
-            transition: opacity 2s ease 0.5s; /* Lite fördröjning efter videon */
-            padding-bottom: 50px; /* Extra space i botten */
-            width: 100%;
+            height: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             max-width: 100%;
-            overflow-x: hidden;
-            box-sizing: border-box;
         }
 
         .mission-form iframe {
-            height: 850px !important; /* Force it to have height: 850px !important; */
+            flex: 1; /* Fyller ut hela page-2 */
+            height: 100% !important;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -585,12 +616,18 @@
 
             <!-- Pappret inuti -->
             <div class="paper-sheet">
-                <div id="typewriter-container" class="typewriter-text"></div>
+                <!-- SIDA 1: Briefing -->
+                <div id="page-1" class="page-section">
+                    <div id="typewriter-container" class="typewriter-text"></div>
+                    <div id="scroll-hint" class="scroll-hint" onclick="scrollToForm()">▼ NEXT PAGE ▼</div>
+                </div>
 
-                <!-- RSVP Formulär -->
-                <div class="mission-form">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="320" height="454" frameborder="0" marginheight="0" marginwidth="0">Läser in …</iframe>
-                    <button onclick="triggerDestructionSequence()" class="submit-stamp">BEKRÄFTA INSKICKAT & FÖRSTÖR</button>
+                <!-- SIDA 2: Formulär -->
+                <div id="page-2" class="page-section">
+                    <div class="mission-form">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="320" height="454" frameborder="0" marginheight="0" marginwidth="0">Läser in …</iframe>
+                        <button onclick="triggerDestructionSequence()" class="submit-stamp">BEKRÄFTA INSKICKAT & FÖRSTÖR</button>
+                    </div>
                 </div>
                 
                 <!-- Success Stamp -->
@@ -657,8 +694,8 @@
         // Lägg till en passiv touchstart för att förbättra responsen på iOS
         document.addEventListener('touchstart', function() {}, {passive: true});
         
-        // Öppna automatiskt efter 7 sekunder (7000ms)
-        autoOpenTimeout = setTimeout(openDossier, 7000);
+        // Öppna automatiskt efter 10 sekunder (10000ms)
+        autoOpenTimeout = setTimeout(openDossier, 10000);
 
         // Funktion för att öppna mappen
         function openDossier() {
@@ -735,6 +772,11 @@
                 // Visa videon och formuläret när texten är klar
                 document.querySelector('.paper-sheet').classList.add('content-loaded');
             }
+        }
+
+        function scrollToForm() {
+            const paper = document.querySelector('.paper-sheet');
+            paper.scrollTop = paper.scrollHeight;
         }
 
         function triggerDestructionSequence() {
