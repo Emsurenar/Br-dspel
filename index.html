@@ -263,7 +263,7 @@
                 0 10px 30px rgba(0,0,0,0.5);
             
             z-index: 2;
-            padding: 10px 15px; /* Ännu mindre padding i toppen/botten */
+            padding: 5px 10px; /* Minimal padding för mobil */
             display: flex;
             flex-direction: column;
             overflow-y: scroll; /* Tillåt scroll om innehållet är långt */
@@ -295,9 +295,9 @@
         .typewriter-text {
             font-family: 'Courier New', Courier, monospace;
             color: #222;
-            font-size: 0.7rem; /* Ytterligare minskad storlek */
-            line-height: 1.1; /* Tätare rader */
-            margin-bottom: 5px;
+            font-size: 0.55rem; /* Extremt kompakt för mobil */
+            line-height: 1.05; 
+            margin-bottom: 2px;
             white-space: pre-wrap; /* Bevara radbrytningar */
             text-shadow: 0 0 1px rgba(0,0,0,0.1); /* Ojämn svärta */
         }
@@ -317,12 +317,23 @@
             opacity: 1;
         }
 
+        @media (min-width: 1024px) {
+            .typewriter-text {
+                font-size: 1.0rem;
+                line-height: 1.4;
+                margin-bottom: 15px;
+            }
+            .paper-sheet {
+                padding: 20px;
+            }
+        }
+
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
-            margin-top: 5px; /* Minimalt avstånd */
+            margin-top: 2px; /* Minimalt avstånd */
             width: 100%;
             border-top: 2px dashed #999;
-            padding-top: 20px;
+            padding-top: 10px;
             opacity: 0; /* Göm formuläret initialt */
             transition: opacity 2s ease 0.5s; /* Lite fördröjning efter videon */
             padding-bottom: 50px; /* Extra space i botten */
@@ -604,7 +615,7 @@
         // Texten som ska skrivas ut
         const missionSegments = [
             { text: "TOP SECRET // DIREKTIV #001\n\n" },
-            { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: clamp(1rem, 4vw, 1.4rem); font-weight: 800; display: block; margin: 5px 0; line-height: 1.1;" },
+            { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: clamp(0.7rem, 4vw, 1.4rem); font-weight: 800; display: block; margin: 2px 0; line-height: 1.0;" },
             { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nKODNAMN: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
         ];
         
