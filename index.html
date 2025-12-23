@@ -41,7 +41,7 @@
             transition: background 1.5s ease;
             z-index: 0;
             filter: brightness(0.15) grayscale(1) blur(2px); /* Neutral nattläge */
-            animation: switchOn 3s 1s forwards; /* Snabbare start för mobil */
+            animation: switchOn 3s 2s forwards; /* Fördröjd start */
             transform: scale(1.1);
         }
 
@@ -110,7 +110,7 @@
             transform-style: preserve-3d;
             mix-blend-mode: multiply;
             filter: brightness(0.2) grayscale(1) contrast(1.2); /* Starta mörkt (belyst av stearinljus) */
-            animation: folderSwitchOn 3s 1s forwards; /* Snabbare start */
+            animation: folderSwitchOn 3s 2s forwards; /* Fördröjd start */
         }
 
         /* Mappens "Tab" (Fliken där uppe) */
@@ -468,7 +468,7 @@
             background: radial-gradient(circle, transparent 40%, #000 140%);
             z-index: 200; /* Ligger över allt */
             opacity: 0.8; /* Mörkt rum initialt */
-            animation: switchOnVignette 3s 1s forwards, flicker 4s 1.3s infinite; /* Snabbare start */
+            animation: switchOnVignette 3s 2s forwards, flicker 4s 2.3s infinite; /* Fördröjd start */
         }
 
         #cold-overlay {
@@ -482,7 +482,7 @@
             mix-blend-mode: hard-light; /* Kall, död ton */
             z-index: 190; /* Ligger under vinjetten men över rummet */
             opacity: 0;
-            animation: cold-flicker 4s 1.3s infinite;
+            animation: cold-flicker 4s 2.3s infinite;
         }
 
         @keyframes flicker {
@@ -652,12 +652,12 @@
 
         // Koppla händelselyssnare för både klick och touch
         const dossier = document.getElementById('dossier');
-        document.addEventListener('click', openDossier);
+        dossier.addEventListener('click', openDossier);
         // Lägg till en passiv touchstart för att förbättra responsen på iOS
         document.addEventListener('touchstart', function() {}, {passive: true});
         
-        // Öppna automatiskt efter 5 sekunder (5000ms)
-        autoOpenTimeout = setTimeout(openDossier, 5000);
+        // Öppna automatiskt efter 7 sekunder (7000ms)
+        autoOpenTimeout = setTimeout(openDossier, 7000);
 
         // Funktion för att öppna mappen
         function openDossier() {
