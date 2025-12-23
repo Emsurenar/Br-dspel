@@ -10,9 +10,10 @@
             margin: 0;
             padding: 0;
             height: 100dvh; /* Mobile viewport fix för adressfältet */
+            width: 100vw;
             overflow: hidden; /* Förhindra scroll under animationen */
             font-family: 'Courier New', Courier, monospace;
-            background-color: #2c1e1e; /* Mörk grundfärg */
+            background-color: #1a1a1a; /* Mörkare grundfärg för nattläge */
         }
 
         .desk-surface {
@@ -34,8 +35,7 @@
             width: 100%;
             height: 100%;
             background: url('Bakgrund.jpg') no-repeat center center;
-            background-size: cover;
-            transform: scale(1.25); /* Zooma in */
+            background-size: cover; /* Fyller skärmen korrekt i porträtt */
             transition: background 1.5s ease;
             z-index: -1;
             filter: brightness(0.1) sepia(0.8) hue-rotate(200deg) blur(2px); /* Mörkare nattläge */
@@ -49,15 +49,20 @@
         /* --- 2. MAPPEN (The Asset) --- */
         .dossier-container {
             position: relative;
-            width: 450px;
-            height: 600px;
-            cursor: pointer;
+            /* Mobile First: Relativa enheter */
+            width: 90vw;
+            aspect-ratio: 3/4; /* Behåll mappens proportioner */
+            height: auto;
+            max-width: 500px; /* Begränsning för större skärmar */
+            max-height: 85dvh;
             
-            top: 70px; /* Justerad position */
-            /* Startposition för animationen (utanför skärmen) */
+            /* Centrera mappen */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            cursor: pointer;
             opacity: 1; /* Mappen är redan där */
-            transform: scale(var(--dossier-scale)) rotate(-2deg); /* Fast rotation */
-            animation: breathing 10s ease-in-out infinite alternate; /* Mikroskopisk liv */
+            transform: translate(-50%, -50%) scale(var(--dossier-scale)) rotate(-2deg);
             transform-style: preserve-3d; /* För 3D-öppning */
             z-index: 15; /* Säkerställ att den är klickbar */
             will-change: transform;
@@ -70,9 +75,9 @@
             background-image: 
                 linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(0,0,0,0.1)),
                 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
-            border-radius: 4px;
-            border-bottom: 2px solid #bba388;
-            border-right: 1px solid #c5ad90;
+            border-radius: 1vw;
+            border-bottom: 0.5vw solid #bba388;
+            border-right: 0.25vw solid #c5ad90;
             position: relative;
             box-shadow: 
                 0 1px 2px rgba(0,0,0,0.9), /* Skarp Kontakt */
@@ -93,13 +98,13 @@
         .manila-folder::before {
             content: '';
             position: absolute;
-            top: -20px;
+            top: -5%;
             right: 0;
-            width: 120px;
-            height: 25px;
+            width: 35%;
+            height: 6%;
             background-color: #dcbfa3;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
-            border-radius: 6px 6px 0 0;
+            border-radius: 1vw 1vw 0 0;
             box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.1);
             backface-visibility: hidden; /* Dölj baksidan av fliken vid rotation */
         }
@@ -116,13 +121,15 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
             transform: rotateY(180deg);
             backface-visibility: hidden; /* Syns bara när den är vänd mot kameran */
-            border-radius: 4px;
+            border-radius: 1vw;
             box-shadow: inset 0 0 60px rgba(139, 69, 19, 0.15);
         }
 
         /* Hover effekt på mappen */
-        .dossier-container:hover .manila-folder {
-            transform: scale(1.01);
+        @media (hover: hover) {
+            .dossier-container:hover .manila-folder {
+                transform: scale(1.01);
+            }
         }
 
         /* Öppna mappen */
@@ -136,7 +143,7 @@
             font-weight: bold;
             text-transform: uppercase;
             border: 4px solid;
-            padding: 10px 15px;
+            padding: 1vh 2vw;
             opacity: 0.7;
             mix-blend-mode: multiply; /* Får det att se ut som bläck på papper */
             pointer-events: none; /* Klick går igenom stämpeln */
@@ -148,7 +155,7 @@
         .top-secret {
             color: #b30000;
             border-color: #b30000;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 8vw, 3rem);
             top: 20%;
             left: 10%;
             transform: rotate(-15deg);
@@ -158,7 +165,7 @@
         .eyes-only {
             color: #8b0000;
             border-color: #8b0000;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 4vw, 1.5rem);
             bottom: 25%;
             right: 10%;
             transform: rotate(10deg);
@@ -168,21 +175,36 @@
 
         /* --- 5. ANIMATION --- */
         @keyframes breathing {
-            0% { transform: scale(var(--dossier-scale)) rotate(-2deg); }
-            100% { transform: scale(calc(var(--dossier-scale) * 1.01)) rotate(-2deg); }
+            0% { transform: translate(-50%, -50%) scale(var(--dossier-scale)) rotate(-2deg); }
+            100% { transform: translate(-50%, -50%) scale(calc(var(--dossier-scale) * 1.01)) rotate(-2deg); }
         }
 
         @keyframes switchOn {
-            0% { filter: brightness(0.15) sepia(0.5) hue-rotate(200deg) blur(1px); }
+            0% { filter: brightness(0.1) sepia(0.8) hue-rotate(200deg) blur(2px); }
             /* Mjukare uppvärmning av glödtråden */
             5% { filter: brightness(0.6) sepia(0.4) hue-rotate(50deg) blur(0.5px); } 
             10% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); } 
+            /* Efter-flimmer (instabil lampa) */
+            12% { filter: brightness(0.8) sepia(0.1) hue-rotate(0deg) blur(0px); }
+            14% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); }
+            15% { filter: brightness(0.9) sepia(0.05) hue-rotate(0deg) blur(0px); }
+            16% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); }
+            25% { filter: brightness(0.95) sepia(0) hue-rotate(0deg) blur(0px); }
+            26% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); }
             100% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); }
         }
 
         @keyframes folderSwitchOn {
             0% { filter: brightness(0.25) sepia(0.7) contrast(1.3); }
+            5% { filter: brightness(0.8) sepia(0.5) contrast(1.2); } /* Matchar uppvärmning */
             10% { filter: sepia(0.3) contrast(1.1); } /* Normal */
+            /* Efter-flimmer */
+            12% { filter: brightness(0.8) sepia(0.3) contrast(1.1); }
+            14% { filter: sepia(0.3) contrast(1.1); }
+            15% { filter: brightness(0.9) sepia(0.3) contrast(1.1); }
+            16% { filter: sepia(0.3) contrast(1.1); }
+            25% { filter: brightness(0.95) sepia(0.3) contrast(1.1); }
+            26% { filter: sepia(0.3) contrast(1.1); }
             100% { filter: sepia(0.3) contrast(1.1); }
         }
 
@@ -190,6 +212,13 @@
             0% { opacity: 0.8; } /* Mörka hörn i natten */
             1% { opacity: 0; } /* Ljuset blåser bort skuggorna */
             5% { opacity: 0.2; } /* Normal vinjett */
+            /* Efter-flimmer */
+            12% { opacity: 0.3; }
+            14% { opacity: 0.2; }
+            15% { opacity: 0.25; }
+            16% { opacity: 0.2; }
+            25% { opacity: 0.22; }
+            26% { opacity: 0.2; }
             100% { opacity: 0.2; }
         }
 
@@ -201,7 +230,7 @@
             width: 100%;
             height: 100%;
             background-color: #cbb685; /* Mörkare insida av mappen */
-            border-radius: 4px;
+            border-radius: 1vw;
             z-index: 1;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
             mix-blend-mode: multiply; /* Låt bordet lysa igenom mappen */
@@ -209,10 +238,10 @@
 
         .paper-sheet {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            right: 15px;
-            bottom: 15px;
+            top: 2%;
+            left: 2%;
+            right: 2%;
+            bottom: 2%;
             background-color: #f4f1ea; /* Gammalt papper */
             /* Paper grain texture */
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"/></svg>');
@@ -223,7 +252,7 @@
                 0 10px 30px rgba(0,0,0,0.5);
             
             z-index: 2;
-            padding: 35px; /* Mer padding för att kompensera för rivna kanter */
+            padding: 8%; /* Mer padding för att kompensera för rivna kanter */
             display: flex;
             flex-direction: column;
             overflow-y: auto; /* Tillåt scroll om innehållet är långt */
@@ -259,7 +288,7 @@
         .typewriter-text {
             font-family: 'Courier New', Courier, monospace;
             color: #222;
-            font-size: 0.85rem;
+            font-size: clamp(0.85rem, 3.5vw, 1rem);
             line-height: 1.4;
             margin-bottom: 15px;
             white-space: pre-wrap; /* Bevara radbrytningar */
@@ -283,12 +312,17 @@
 
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
-            margin-top: 30px;
+            margin-top: 5vh;
             width: 100%;
             border-top: 2px dashed #999;
             padding-top: 20px;
             opacity: 0; /* Göm formuläret initialt */
             transition: opacity 2s ease 0.5s; /* Lite fördröjning efter videon */
+        }
+
+        .mission-form iframe {
+            height: 45vh;
+            width: 100%;
         }
 
         .form-group {
@@ -369,11 +403,12 @@
         /* --- 8. RÖK-EFFEKT (Cigarette Smoke) --- */
         #smoke-container {
             position: absolute;
-            /* Justera dessa för att passa askfatet i bakgrundsbilden */
-            top: 13%; 
-            left: 64%;
-            width: 10px;
-            height: 10px;
+            /* Positionerad relativt till viewport för porträtt */
+            top: 10%; 
+            right: 15%;
+            left: auto;
+            width: 2vw;
+            height: 2vw;
             z-index: 50;
             pointer-events: none;
         }
@@ -472,8 +507,8 @@
         /* --- 10. DISTANT LIGHT (Candle Reflection) --- */
         .distant-light {
             position: absolute;
-            top: -400px;
-            right: -400px;
+            top: -20vh;
+            right: -20vw;
             width: 1000px;
             height: 1000px;
             /* Mjukare orange */
@@ -500,90 +535,10 @@
             100% { opacity: 0.8; transform: translate(0, 0) scale(1); }
         }
 
-        /* --- RESPONSIVITET (Mobilanpassning) --- */
-        @media (max-width: 768px) {
-            :root {
-                --dossier-scale: 1; /* Återställ skala, vi styr storlek med width istället */
-            }
-
-            .dossier-container {
-                width: 90%; /* Lite luft på sidorna för skuggor */
-                max-width: 340px; /* 1. BEGRÄNSA BREDDEN */
-                height: 520px; /* Anpassa höjden för proportionerna */
-                top: 0; /* 2. CENTRERING (nollställ desktop offset) */
-                left: 0;
-                margin: auto; /* Centrera i flex-föräldern */
-            }
-
-            .paper-sheet {
-                padding: 15px; /* 3. INNEHÅLLSANPASSNING (Mindre padding) */
-                -webkit-overflow-scrolling: touch; /* Mjuk scroll på iOS */
-            }
-
-            .typewriter-text {
-                font-size: 0.9rem; /* Lite större för läsbarhet */
-            }
-
-            /* Hantera den stora rubriken i JS */
-            #typewriter-container span {
-                font-size: 1.3rem !important; /* Anpassa rubrikstorlek */
-                line-height: 1.3 !important;
-            }
-
-            .stamp.top-secret {
-                font-size: 1.4rem;
-                border-width: 3px;
-                left: 5%;
-                top: 10%;
-            }
-
-            .stamp.eyes-only {
-                font-size: 1rem;
-                border-width: 4px;
-                right: 5%;
-                bottom: 20%;
-            }
-
-            .mission-form {
-                margin-top: 20px;
-                padding-top: 15px;
-            }
-
-            .mission-form iframe {
-                height: 320px; /* Anpassa höjden så den ryms i den mindre mappen */
-            }
-
-            .submit-stamp {
-                font-size: 0.9rem;
-                padding: 12px;
-                margin-top: 15px;
-                white-space: normal; /* Tillåt radbrytning på knappen */
-            }
-
-            /* Justera rökposition för mobil så den inte hamnar utanför */
-            #smoke-container {
-                left: 50%; 
-                top: 5%;
-            }
-
-            /* Tap hint animation på mobil (pulserande effekt) */
-            .dossier-container:not(.open) .manila-folder {
-                animation: pulseHint 2s infinite ease-in-out;
-                will-change: transform;
-            }
-
-            /* Anpassa ljuset för mindre skärmar så det inte tar över */
-            .distant-light {
-                width: 600px;
-                height: 600px;
-                top: -200px;
-                right: -200px;
-            }
-
-            /* Justera vinjetten för porträttläge */
-            #vignette {
-                background: radial-gradient(circle, transparent 25%, #000 110%);
-            }
+        /* Tap hint animation på mobil (pulserande effekt) */
+        .dossier-container:not(.open) .manila-folder {
+            animation: pulseHint 2s infinite ease-in-out;
+            will-change: transform;
         }
 
         @keyframes pulseHint {
@@ -616,7 +571,7 @@
 
                 <!-- RSVP Formulär -->
                 <div class="mission-form">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Läser in…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Läser in…</iframe>
                     <button onclick="triggerDestructionSequence()" class="submit-stamp">BEKRÄFTA INSKICKAT & FÖRSTÖR</button>
                 </div>
                 
@@ -642,7 +597,7 @@
         // Texten som ska skrivas ut
         const missionSegments = [
             { text: "TOP SECRET // DIREKTIV #001\n\n" },
-            { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: 1.7rem; font-weight: 800; display: block; margin: 15px 0; line-height: 1.2;" },
+            { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: clamp(1.2rem, 5vw, 1.7rem); font-weight: 800; display: block; margin: 15px 0; line-height: 1.2;" },
             { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nKODNAMN: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
         ];
         
