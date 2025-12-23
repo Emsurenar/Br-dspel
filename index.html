@@ -484,6 +484,8 @@
             height: 40px;
             z-index: 50;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 5s ease;
         }
 
         .smoke-puff {
@@ -890,7 +892,6 @@
         // Starta rök-generatorn
         // Anpassa frekvens baserat på skärmstorlek för prestanda
         const smokeInterval = window.innerWidth < 768 ? 90 : 20; // Justerad intensitet (-20%)
-        setInterval(createSmoke, smokeInterval);
 
         function createSmoke() {
             const container = document.getElementById('smoke-container');
@@ -1134,6 +1135,12 @@
                     
                     // Start room animations
                     document.body.classList.add('sequence-started');
+
+                    // Starta rök samtidigt som lampan tänds (1.5s fördröjning i CSS)
+                    setTimeout(() => {
+                        document.getElementById('smoke-container').style.opacity = 1;
+                        setInterval(createSmoke, smokeInterval);
+                    }, 1500);
 
                     setTimeout(() => {
                         overlay.remove();
