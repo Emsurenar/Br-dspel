@@ -39,8 +39,9 @@
             background-size: cover; 
             transition: background 1.5s ease;
             z-index: 0;
-            filter: brightness(0.1) sepia(0.8) hue-rotate(200deg) blur(2px); /* Mörkare nattläge */
+            filter: brightness(0.15) sepia(0.2) hue-rotate(210deg) blur(2px); /* Neutral nattläge */
             animation: switchOn 3s 1s forwards; /* Snabbare start för mobil */
+            transform: scale(1.1);
         }
 
         :root {
@@ -51,11 +52,11 @@
         .dossier-container {
             position: absolute;
             /* Mobile First: Maximera bredd */
-            width: 75vw; 
+            width: 64vw; 
             /* Beräkna höjd för att fylla skärmen men behålla formen */
             aspect-ratio: 3/4; 
             height: auto;
-            max-height: 55dvh;
+            max-height: 47dvh;
             
             /* Centrera mappen */
             top: 50%;
@@ -181,7 +182,7 @@
         }
 
         @keyframes switchOn {
-            0% { filter: brightness(0.1) sepia(0.8) hue-rotate(200deg) blur(2px); }
+            0% { filter: brightness(0.15) sepia(0.2) hue-rotate(210deg) blur(2px); }
             /* Mjukare uppvärmning av glödtråden */
             5% { filter: brightness(0.6) sepia(0.4) hue-rotate(50deg) blur(0.5px); } 
             10% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); } 
@@ -257,6 +258,8 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto; /* Tillåt scroll om innehållet är långt */
+            overflow-x: hidden; /* Lås horisontell scroll */
+            box-sizing: border-box;
             -webkit-overflow-scrolling: touch; /* Mjuk scroll på iOS */
             opacity: 0;
             transition: opacity 1s ease 0.5s; /* Tona in efter att mappen börjat öppnas */
@@ -315,11 +318,17 @@
             opacity: 0; /* Göm formuläret initialt */
             transition: opacity 2s ease 0.5s; /* Lite fördröjning efter videon */
             padding-bottom: 50px; /* Extra space i botten */
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
         }
 
         .mission-form iframe {
             height: 40vh; /* Anpassad höjd för mindre mapp */
             width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             pointer-events: auto;
         }
 
@@ -554,6 +563,11 @@
 
         .dossier-container:not(.open) .tap-hint {
             opacity: 1;
+        }
+
+        .dossier-container.open .tap-hint {
+            opacity: 0;
+            transition: none; /* Göm direkt */
         }
 
         @keyframes pulseText {
