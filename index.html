@@ -386,6 +386,8 @@
             max-width: 100%;
             box-sizing: border-box;
             pointer-events: auto;
+            filter: sepia(1) contrast(1.2) grayscale(0.2) brightness(0.9);
+            mix-blend-mode: multiply;
         }
 
         .form-group {
@@ -1078,8 +1080,10 @@
 
                 // Standard väntetid: 2s (fade in) + 3s (lästid) = 5s
                 let waitTime = 5000;
-                // Korta ned första meningen och sista frågan (innan knappar) med 0.5s
-                if (i === 0 || i === texts.length - 1) {
+                
+                if (i === 0) {
+                    waitTime = 3500;
+                } else if (i === texts.length - 1) {
                     waitTime = 4500;
                 }
                 await new Promise(r => setTimeout(r, waitTime));
