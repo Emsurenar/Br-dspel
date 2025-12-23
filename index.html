@@ -257,19 +257,16 @@
             right: 2%;
             bottom: 2%;
             background-color: #f4f1ea; /* Gammalt papper */
-            /* Paper grain texture */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"/></svg>');
-            
             /* Djup & Skugga (Lager 1: Kontakt, Lager 2: Ambiens) */
             box-shadow: 
                 0 1px 3px rgba(0,0,0,0.8), 
                 0 10px 30px rgba(0,0,0,0.5);
             
             z-index: 2;
-            padding: 20px; /* Optimerad padding för mobil */
+            padding: 15px; /* Lite mindre padding */
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* Tillåt scroll om innehållet är långt */
+            overflow-y: scroll; /* Tillåt scroll om innehållet är långt */
             overflow-x: hidden; /* Lås horisontell scroll */
             box-sizing: border-box;
             -webkit-overflow-scrolling: touch; /* Mjuk scroll på iOS */
@@ -281,7 +278,6 @@
             
             /* Integration i rummet */
             filter: sepia(0.4) contrast(1.2) brightness(0.9);
-            mix-blend-mode: multiply; /* Låt trästrukturen lysa igenom */
             
             /* Slitna kanter (Jagged edges) */
             clip-path: polygon(
@@ -299,9 +295,9 @@
         .typewriter-text {
             font-family: 'Courier New', Courier, monospace;
             color: #222;
-            font-size: 1.1rem; /* Ökad läsbarhet för mobil */
-            line-height: 1.5;
-            margin-bottom: 15px;
+            font-size: 0.8rem; /* Minskad storlek för att flytta upp brytningen */
+            line-height: 1.2;
+            margin-bottom: 10px;
             white-space: pre-wrap; /* Bevara radbrytningar */
             text-shadow: 0 0 1px rgba(0,0,0,0.1); /* Ojämn svärta */
         }
@@ -323,7 +319,7 @@
 
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
-            margin-top: 5vh;
+            margin-top: 10px; /* Minskat avstånd för att höja brytningen */
             width: 100%;
             border-top: 2px dashed #999;
             padding-top: 20px;
@@ -337,7 +333,7 @@
         }
 
         .mission-form iframe {
-            height: 600px; /* Fixed height to ensure internal scrolling */
+            height: 850px !important; /* Force it to have height: 850px !important; */
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -620,7 +616,7 @@
 
         // Starta rök-generatorn
         // Anpassa frekvens baserat på skärmstorlek för prestanda
-        const smokeInterval = window.innerWidth < 768 ? 70 : 15; // Betydligt högre intensitet
+        const smokeInterval = window.innerWidth < 768 ? 90 : 20; // Justerad intensitet (-20%)
         setInterval(createSmoke, smokeInterval);
 
         function createSmoke() {
