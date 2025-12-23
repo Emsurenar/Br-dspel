@@ -59,7 +59,7 @@
         .dossier-container {
             position: absolute;
             /* Mobile First: Maximera bredd */
-            width: 61vw; 
+            width: 95vw; 
             /* Beräkna höjd för att fylla skärmen men behålla formen */
             aspect-ratio: 3/4; 
             height: auto;
@@ -314,6 +314,7 @@
             width: 100%;
             display: none;
             flex-direction: column;
+            padding: 10px 0;
         }
         
         .typewriter-text {
@@ -369,13 +370,15 @@
 
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
-            width: 90%;
+            width: 100%;
             height: 100%;
             flex: 1;
             display: flex;
             flex-direction: column;
             max-width: 100%;
             margin: 0 auto;
+            padding: 0 15px;
+            box-sizing: border-box;
         }
 
         .mission-form iframe {
