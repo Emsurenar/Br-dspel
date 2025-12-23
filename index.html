@@ -91,9 +91,7 @@
             width: 100%;
             height: 100%;
             background-color: #dcbfa3;
-            background-image: 
-                linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(0,0,0,0.1)),
-                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+            background-image: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(0,0,0,0.1));
             border-radius: 1vw;
             border-bottom: 0.5vw solid #bba388;
             border-right: 0.25vw solid #c5ad90;
@@ -108,8 +106,7 @@
             transform-origin: left center; /* Öppnas som en bok */
             z-index: 10;
             transform-style: preserve-3d;
-            mix-blend-mode: multiply;
-            filter: brightness(0.2) grayscale(1) contrast(1.2); /* Starta mörkt (belyst av stearinljus) */
+            filter: brightness(0.2); /* Starta mörkt */
             animation: folderSwitchOn 3s 2s forwards; /* Fördröjd start */
         }
 
@@ -122,7 +119,6 @@
             width: 35%;
             height: 6%;
             background-color: #dcbfa3;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
             border-radius: 1vw 1vw 0 0;
             box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.1);
             backface-visibility: hidden; /* Dölj baksidan av fliken vid rotation */
@@ -137,7 +133,6 @@
             width: 100%;
             height: 100%;
             background-color: #dcbfa3;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
             transform: rotateY(180deg);
             backface-visibility: hidden; /* Syns bara när den är vänd mot kameran */
             border-radius: 1vw;
@@ -214,17 +209,17 @@
         }
 
         @keyframes folderSwitchOn {
-            0% { filter: brightness(0.2) grayscale(1) contrast(1.2); }
-            5% { filter: brightness(0.8) sepia(0.5) contrast(1.2); } /* Matchar uppvärmning */
-            10% { filter: sepia(0.3) contrast(1.1); } /* Normal */
+            0% { filter: brightness(0.2); }
+            5% { filter: brightness(0.8); } /* Matchar uppvärmning */
+            10% { filter: brightness(1.0); } /* Normal */
             /* Efter-flimmer */
-            12% { filter: brightness(0.8) sepia(0.3) contrast(1.1); }
-            14% { filter: sepia(0.3) contrast(1.1); }
-            15% { filter: brightness(0.9) sepia(0.3) contrast(1.1); }
-            16% { filter: sepia(0.3) contrast(1.1); }
-            25% { filter: brightness(0.95) sepia(0.3) contrast(1.1); }
-            26% { filter: sepia(0.3) contrast(1.1); }
-            100% { filter: sepia(0.3) contrast(1.1); }
+            12% { filter: brightness(0.8); }
+            14% { filter: brightness(1.0); }
+            15% { filter: brightness(0.9); }
+            16% { filter: brightness(1.0); }
+            25% { filter: brightness(0.95); }
+            26% { filter: brightness(1.0); }
+            100% { filter: brightness(1.0); }
         }
 
         @keyframes switchOnVignette {
