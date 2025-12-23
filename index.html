@@ -285,14 +285,7 @@
             background-color: #f4f1ea; /* Gammalt papper */
             backface-visibility: hidden; /* Dölj baksidan vid vändning */
             
-            /* Slitna kanter (Jagged edges) - Flyttad hit */
-            clip-path: polygon(
-                1% 1%, 5% 0%, 10% 1%, 15% 0%, 20% 1%, 25% 0%, 30% 1%, 35% 0%, 40% 1%, 45% 0%, 50% 1%, 55% 0%, 60% 1%, 65% 0%, 70% 1%, 75% 0%, 80% 1%, 85% 0%, 90% 1%, 95% 0%, 99% 1%,
-                100% 5%, 99% 10%, 100% 15%, 99% 20%, 100% 25%, 99% 30%, 100% 35%, 99% 40%, 100% 45%, 99% 50%, 100% 55%, 99% 60%, 100% 65%, 99% 70%, 100% 75%, 99% 80%, 100% 85%, 99% 90%, 100% 95%, 99% 99%,
-                95% 100%, 90% 99%, 85% 100%, 80% 99%, 75% 100%, 70% 99%, 65% 100%, 60% 99%, 55% 100%, 50% 99%, 45% 100%, 40% 99%, 35% 100%, 30% 99%, 25% 100%, 20% 99%, 15% 100%, 10% 99%, 5% 100%, 1% 99%,
-                0% 95%, 1% 90%, 0% 85%, 1% 80%, 0% 75%, 1% 70%, 0% 65%, 1% 60%, 0% 55%, 1% 50%, 0% 45%, 1% 40%, 0% 35%, 1% 30%, 0% 25%, 1% 20%, 0% 15%, 1% 10%, 0% 5%
-            );
-            /* Skugga via filter för att synas med clip-path */
+            border-radius: 2px;
             filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
         }
 
@@ -314,12 +307,13 @@
 
         #page-2 {
             position: relative; /* Flow content to allow scrolling */
-            height: auto;
+            height: 100%;
             justify-content: flex-start;
             z-index: 1;
             overflow-x: hidden;
             width: 100%;
             display: none;
+            flex-direction: column;
         }
         
         .typewriter-text {
@@ -374,7 +368,7 @@
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
             width: 100%;
-            height: auto;
+            height: 100%;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -382,7 +376,9 @@
         }
 
         .mission-form iframe {
-            height: 60vh !important; /* Fixed height for scrolling */
+            height: auto !important;
+            flex: 1;
+            min-height: 0;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -416,6 +412,7 @@
 
         .submit-stamp {
             margin-top: 10px;
+            flex-shrink: 0;
             width: 100%;
             padding: 8px 15px;
             border: 2px solid #b30000;
@@ -595,6 +592,67 @@
             100% { opacity: 0.4; transform: translate(0, 0) scale(1); }
         }
 
+        /* --- FISH ANIMATION (Easter Egg) --- */
+        .fish {
+            position: absolute;
+            pointer-events: none;
+        }
+        .fish-body {
+            background: currentColor;
+            border-radius: 50% 50% 40% 40%;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .fish-tail {
+            background: currentColor;
+            position: absolute;
+            right: 98%;
+            top: 50%;
+            transform: translateY(-50%);
+            /* Triangel som pekar in mot kroppen (höger) */
+            clip-path: polygon(0 0, 0 100%, 100% 50%);
+        }
+        .fish-prey {
+            width: 50px; height: 30px;
+            color: #ff8c00; /* Orange */
+            top: 50%; left: -100px;
+            animation: swimPrey 8s linear forwards;
+        }
+        .fish-prey .fish-tail { width: 15px; height: 20px; }
+        
+        .fish-predator {
+            width: 180px; height: 90px;
+            color: #2f4f4f; /* Dark Slate Gray */
+            top: 55%; left: -250px;
+            animation: swimPredator 6s linear 1.5s forwards; /* Startar senare, simmar snabbare */
+        }
+        .fish-predator .fish-tail { width: 50px; height: 60px; }
+        .fish-fin {
+            position: absolute;
+            bottom: 85%; left: 40%;
+            width: 50px; height: 40px;
+            background: currentColor;
+            clip-path: polygon(0 100%, 30% 0, 100% 100%); /* Hajfena */
+            transform: skewX(-10deg);
+        }
+
+        @keyframes swimPrey {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            30% { transform: translate(35vw, -10vh) rotate(-10deg); } /* Lugnt simmande */
+            40% { transform: translate(45vw, 5vh) rotate(10deg); } /* Rovdjuret närmar sig */
+            45% { transform: translate(65vw, -20vh) rotate(-30deg); } /* PANIK! */
+            50% { transform: translate(100vw, 15vh) rotate(30deg); } /* Rusning */
+            60% { transform: translate(150vw, -10vh) rotate(-15deg); } /* Borta */
+            100% { transform: translate(150vw, -10vh) rotate(-15deg); }
+        }
+
+        @keyframes swimPredator {
+            0% { transform: translate(0, 0); }
+            30% { transform: translate(40vw, -10vh); }
+            100% { transform: translate(130vw, -5vh); }
+        }
+
         /* --- INTRO SEQUENCE --- */
         #intro-overlay {
             position: fixed;
@@ -686,7 +744,6 @@
                 <!-- SIDA 1: Briefing -->
                 <div id="page-1" class="page-section" onclick="scrollToForm()">
                     <div id="typewriter-container" class="typewriter-text"></div>
-                    <div id="scroll-hint" class="scroll-hint">&gt;&gt; KLICKA HÄR FÖR ATT KVITTERA MOTTAGANDET &lt;&lt;</div>
                 </div>
 
                 <!-- SIDA 2: Formulär -->
@@ -719,7 +776,7 @@
         // Texten som ska skrivas ut
         const missionSegments = [
             { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: clamp(0.7rem, 4vw, 1.4rem); font-weight: 800; display: block; margin: 2px 0; line-height: 1.0;" },
-            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nADRESS: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar, kanske.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
+            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nADRESS: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar, kanske.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna.\n\n>> KLICKA HÄR FÖR ATT GÅ VIDARE <<" }
         ];
         
         let currentSegment = 0;
@@ -964,9 +1021,43 @@
             }, 1000);
         }
 
+        let rejectionStep = 0;
+
         function rejectMission() {
+            rejectionStep++;
+            const container = document.getElementById('intro-content');
+            const textEl = container.querySelector('.intro-text');
+            
+            if (rejectionStep === 1) {
+                if (textEl) textEl.innerText = "Säker?";
+            } else if (rejectionStep === 2) {
+                if (textEl) textEl.innerText = "Helt säker?";
+            } else if (rejectionStep === 3) {
+                const btnContainer = container.querySelector('.intro-buttons');
+                if (btnContainer) btnContainer.style.display = 'none';
+                if (textEl) textEl.innerText = "okej";
+                
+                setTimeout(() => {
+                    const overlay = document.getElementById('intro-overlay');
+                    overlay.innerHTML = ''; // Rensa skärmen
+                    startFishChase();
+                }, 2000);
+            }
+        }
+
+        function startFishChase() {
             const overlay = document.getElementById('intro-overlay');
-            overlay.innerHTML = '<img src="https://media.giphy.com/media/l41lH4bLzAM0w8Y36/giphy.gif" style="width:100%; height:100%; object-fit:contain;">';
+            
+            // Skapa fiskarna
+            const prey = document.createElement('div');
+            prey.className = 'fish fish-prey';
+            prey.innerHTML = '<div class="fish-body"><div class="fish-tail"></div></div>';
+            overlay.appendChild(prey);
+            
+            const predator = document.createElement('div');
+            predator.className = 'fish fish-predator';
+            predator.innerHTML = '<div class="fish-body"><div class="fish-tail"></div><div class="fish-fin"></div></div>';
+            overlay.appendChild(predator);
         }
     </script>
 </body>
