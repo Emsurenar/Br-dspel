@@ -257,8 +257,10 @@
             right: 2%;
             bottom: 2%;
             z-index: 2;
-            display: block; /* Ändrat för att hantera sidor */
-            overflow: visible; /* Tillåt 3D-element att sticka ut */
+            padding: 10px; /* Reduced padding for mobile */
+            display: block;
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Prevent horizontal scroll */
             perspective: 1500px; /* Djup för 3D-effekten */
             transform-style: preserve-3d;
             opacity: 0;
@@ -277,15 +279,11 @@
 
         /* --- SID-STRUKTUR --- */
         .page-section {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 10px 15px; /* Flyttad padding från container */
+            padding: 0; /* Padding moved to .paper-sheet */
             background-color: #f4f1ea; /* Gammalt papper */
             backface-visibility: hidden; /* Dölj baksidan vid vändning */
             
@@ -301,6 +299,10 @@
         }
 
         #page-1 {
+            position: absolute; /* Overlay on top */
+            top: 0;
+            left: 0;
+            height: 100%;
             justify-content: space-between; /* Text i toppen, pil i botten */
             cursor: pointer; /* Indikera att man kan klicka för att gå vidare */
             z-index: 5;
@@ -313,6 +315,8 @@
         }
 
         #page-2 {
+            position: relative; /* Flow content to allow scrolling */
+            height: auto;
             justify-content: flex-start;
             z-index: 1;
         }
@@ -370,7 +374,7 @@
         /* --- 7. FORMULÄR (RSVP Protocol) --- */
         .mission-form {
             width: 100%;
-            height: 100%;
+            height: auto;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -378,8 +382,7 @@
         }
 
         .mission-form iframe {
-            flex: 1; /* Fyller ut hela page-2 */
-            height: 100% !important;
+            height: 60vh !important; /* Fixed height for scrolling */
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -412,15 +415,15 @@
         }
 
         .submit-stamp {
-            margin-top: 25px;
+            margin-top: 10px;
             width: 100%;
-            padding: 15px;
-            border: 4px solid #b30000;
+            padding: 8px 15px;
+            border: 2px solid #b30000;
             color: #b30000;
             background: transparent;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             cursor: pointer;
             transform: rotate(-1deg);
