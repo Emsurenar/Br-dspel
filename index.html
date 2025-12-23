@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TOP SECRET INVITATION</title>
     <style>
         /* --- 1. BAKGRUND & RUMMET (The Desk) --- */
@@ -14,6 +14,7 @@
             overflow: hidden; /* Förhindra scroll under animationen */
             font-family: 'Courier New', Courier, monospace;
             background-color: #1a1a1a; /* Mörkare grundfärg för nattläge */
+            overscroll-behavior: none; /* Förhindra "bounce" scroll på mobil */
         }
 
         .desk-surface {
@@ -33,12 +34,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('Bakgrund.jpg') no-repeat center center;
-            background-size: cover; /* Fyller skärmen korrekt i porträtt */
+            /* Portrait-First: Center Bottom focus */
+            background: url('Bakgrund.jpg') no-repeat center bottom;
+            background-size: cover; 
             transition: background 1.5s ease;
             z-index: 0;
             filter: brightness(0.1) sepia(0.8) hue-rotate(200deg) blur(2px); /* Mörkare nattläge */
-            animation: switchOn 3s 3s forwards; /* Tänd lampan vid 3.0s */
+            animation: switchOn 3s 1s forwards; /* Snabbare start för mobil */
         }
 
         :root {
@@ -47,16 +49,15 @@
 
         /* --- 2. MAPPEN (The Asset) --- */
         .dossier-container {
-            position: relative;
-            /* Mobile First: Relativa enheter */
-            width: 90vw;
-            aspect-ratio: 3/4; /* Behåll mappens proportioner */
+            position: absolute;
+            /* Mobile First: Maximera bredd */
+            width: 90vw; 
+            /* Beräkna höjd för att fylla skärmen men behålla formen */
+            aspect-ratio: 3/4; 
             height: auto;
-            max-width: 500px; /* Begränsning för större skärmar */
             max-height: 85dvh;
             
             /* Centrera mappen */
-            position: absolute;
             top: 50%;
             left: 50%;
             cursor: pointer;
@@ -65,6 +66,7 @@
             transform-style: preserve-3d; /* För 3D-öppning */
             z-index: 15; /* Säkerställ att den är klickbar */
             will-change: transform;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .manila-folder {
@@ -90,7 +92,7 @@
             transform-style: preserve-3d;
             mix-blend-mode: multiply;
             filter: brightness(0.25) sepia(0.7) contrast(1.3); /* Starta mörkt (belyst av stearinljus) */
-            animation: folderSwitchOn 3s 3s forwards; /* Blixtra till vid 3s */
+            animation: folderSwitchOn 3s 1s forwards; /* Snabbare start */
         }
 
         /* Mappens "Tab" (Fliken där uppe) */
@@ -251,12 +253,11 @@
                 0 10px 30px rgba(0,0,0,0.5);
             
             z-index: 2;
-            padding: 8%; /* Mer padding för att kompensera för rivna kanter */
+            padding: 20px; /* Optimerad padding för mobil */
             display: flex;
             flex-direction: column;
             overflow-y: auto; /* Tillåt scroll om innehållet är långt */
-            scrollbar-width: none; /* Dölj scrollbar Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            -webkit-overflow-scrolling: touch; /* Mjuk scroll på iOS */
             opacity: 0;
             transition: opacity 1s ease 0.5s; /* Tona in efter att mappen börjat öppnas */
             
@@ -280,15 +281,11 @@
             opacity: 1;
         }
         
-        .paper-sheet::-webkit-scrollbar {
-            display: none; /* Dölj scrollbar Chrome/Safari */
-        }
-
         .typewriter-text {
             font-family: 'Courier New', Courier, monospace;
             color: #222;
-            font-size: clamp(0.85rem, 3.5vw, 1rem);
-            line-height: 1.4;
+            font-size: 1.1rem; /* Ökad läsbarhet för mobil */
+            line-height: 1.5;
             margin-bottom: 15px;
             white-space: pre-wrap; /* Bevara radbrytningar */
             text-shadow: 0 0 1px rgba(0,0,0,0.1); /* Ojämn svärta */
@@ -317,11 +314,13 @@
             padding-top: 20px;
             opacity: 0; /* Göm formuläret initialt */
             transition: opacity 2s ease 0.5s; /* Lite fördröjning efter videon */
+            padding-bottom: 50px; /* Extra space i botten */
         }
 
         .mission-form iframe {
-            height: 45vh;
+            height: 60vh; /* Mer höjd för formuläret på mobil */
             width: 100%;
+            pointer-events: auto;
         }
 
         .form-group {
@@ -402,12 +401,11 @@
         /* --- 8. RÖK-EFFEKT (Cigarette Smoke) --- */
         #smoke-container {
             position: absolute;
-            /* Positionerad relativt till viewport för porträtt */
-            top: 10%; 
-            right: 15%;
-            left: auto;
-            width: 2vw;
-            height: 2vw;
+            /* Flyttad till övre högra hörnet för mobil */
+            top: 5%; 
+            right: 5%;
+            width: 40px;
+            height: 40px;
             z-index: 50;
             pointer-events: none;
         }
@@ -443,7 +441,7 @@
             background: radial-gradient(circle, transparent 40%, #000 140%);
             z-index: 200; /* Ligger över allt */
             opacity: 0.8; /* Mörkt rum initialt */
-            animation: switchOnVignette 3s 3s forwards, flicker 4s 3.3s infinite;
+            animation: switchOnVignette 3s 1s forwards, flicker 4s 1.3s infinite; /* Snabbare start */
         }
 
         #cold-overlay {
@@ -457,7 +455,7 @@
             mix-blend-mode: hard-light; /* Kall, död ton */
             z-index: 190; /* Ligger under vinjetten men över rummet */
             opacity: 0;
-            animation: cold-flicker 4s 3.3s infinite;
+            animation: cold-flicker 4s 1.3s infinite;
         }
 
         @keyframes flicker {
@@ -534,15 +532,33 @@
             100% { opacity: 0.8; transform: translate(0, 0) scale(1); }
         }
 
-        /* Tap hint animation på mobil (pulserande effekt) */
-        .dossier-container:not(.open) .manila-folder {
-            animation: pulseHint 2s infinite ease-in-out;
-            will-change: transform;
+        /* Visual Cue: Tap to Open */
+        .tap-hint {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            animation: pulseText 2s infinite;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 100;
         }
 
-        @keyframes pulseHint {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        .dossier-container:not(.open) .tap-hint {
+            opacity: 1;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.05); }
         }
     </style>
 </head>
@@ -587,6 +603,9 @@
                 <div class="stamp top-secret">TOP SECRET</div>
                 <div class="stamp eyes-only">EYES ONLY</div>
             </div>
+
+            <!-- Tap Hint -->
+            <div class="tap-hint">TAP TO OPEN</div>
 
         </div>
 
@@ -654,9 +673,8 @@
             console.log('Access Granted');
             
             // 1. Öppna mappen (animation)
-            setTimeout(() => {
-                dossier.classList.add('open');
-            }, 500);
+            // Instant response for mobile
+            dossier.classList.add('open');
 
             // 2. Starta skrivmaskin
             setTimeout(() => {
@@ -664,7 +682,7 @@
                     isTyping = true;
                     typeWriter();
                 }
-            }, 1500);
+            }, 500); // Snabbare start av texten
         }
 
         function typeWriter() {
