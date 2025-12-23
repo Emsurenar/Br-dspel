@@ -60,11 +60,11 @@
         .dossier-container {
             position: absolute;
             /* Mobile First: Maximera bredd */
-            width: 61vw; 
+            width: 90vw; 
             /* Beräkna höjd för att fylla skärmen men behålla formen */
             aspect-ratio: 3/4; 
             height: auto;
-            max-height: 45dvh;
+            max-height: 80dvh;
             
             /* Centrera mappen */
             top: 50%;
@@ -258,8 +258,6 @@
             bottom: 2%;
             background-color: #f4f1ea; /* Gammalt papper */
             /* Paper grain texture */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"/></svg>');
-            
             /* Djup & Skugga (Lager 1: Kontakt, Lager 2: Ambiens) */
             box-shadow: 
                 0 1px 3px rgba(0,0,0,0.8), 
@@ -281,7 +279,6 @@
             
             /* Integration i rummet */
             filter: sepia(0.4) contrast(1.2) brightness(0.9);
-            mix-blend-mode: multiply; /* Låt trästrukturen lysa igenom */
             
             /* Slitna kanter (Jagged edges) */
             clip-path: polygon(
@@ -338,7 +335,7 @@
 
         .mission-form iframe {
             height: 75vh; /* Increased height for better visibility */
-            min-height: 600px; /* Ensure it's tall enough on mobile */
+            min-height: 1000px; /* Ensure it's tall enough on mobile */
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
