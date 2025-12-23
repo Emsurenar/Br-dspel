@@ -60,11 +60,11 @@
         .dossier-container {
             position: absolute;
             /* Mobile First: Maximera bredd */
-            width: 61vw; 
+            width: 90vw; 
             /* Beräkna höjd för att fylla skärmen men behålla formen */
             aspect-ratio: 3/4; 
             height: auto;
-            max-height: 45dvh;
+            max-height: 85dvh;
             
             /* Centrera mappen */
             top: 50%;
@@ -441,9 +441,9 @@
             position: absolute;
             bottom: 0;
             left: 50%;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, rgba(200, 200, 220, 0.6) 0%, transparent 70%);
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, rgba(220, 220, 240, 0.8) 0%, transparent 70%);
             border-radius: 50%;
             filter: blur(3px);
             opacity: 0;
@@ -626,7 +626,7 @@
 
         // Starta rök-generatorn
         // Anpassa frekvens baserat på skärmstorlek för prestanda
-        const smokeInterval = window.innerWidth < 768 ? 150 : 30; // Dubblerad intensitet
+        const smokeInterval = window.innerWidth < 768 ? 70 : 15; // Betydligt högre intensitet
         setInterval(createSmoke, smokeInterval);
 
         function createSmoke() {
