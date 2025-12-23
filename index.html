@@ -317,6 +317,9 @@
             height: auto;
             justify-content: flex-start;
             z-index: 1;
+            overflow-x: hidden;
+            width: 100%;
+            display: none;
         }
         
         .typewriter-text {
@@ -715,9 +718,8 @@
     <script>
         // Texten som ska skrivas ut
         const missionSegments = [
-            { text: "TOP SECRET // DIREKTIV #001\n\n" },
             { text: "OPERATION: Historiens första Brädspels-Meisterschaft.", style: "font-size: clamp(0.7rem, 4vw, 1.4rem); font-weight: 800; display: block; margin: 2px 0; line-height: 1.0;" },
-            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nKODNAMN: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
+            { text: "\nUPPDRAG: Dominans via brädspel.\n\nDATUM: 2026-01-03.\nTID: 1600 timmar (ZULU tid).\nPLATS: Sektor Enskede Gård.\nADRESS: Lindevägen 16.\n\nPROTOKOLL: Total diskretion krävs. Fienden lyssnar, kanske.\nREKOMMENDERAD TÄCKMANTEL: Hatt, uppslagen dagstidning eller mörka solglasögon.\n\nVinnaren av årets Brädspels-Meisterschaft kommer få ett pris bortom ära och rikedom.\n\nInstruktioner: Granska underrättelserna. Bekräfta din status nedan." }
         ];
         
         let currentSegment = 0;
@@ -810,7 +812,7 @@
                 let delay = Math.random() * 30 + 20; 
                 
                 // Gör "OPERATION"-delen långsammare och mer spänningsfull
-                if (currentSegment === 1) {
+                if (currentSegment === 0) {
                     delay = Math.random() * 120 + 80;
                 }
                 
@@ -837,6 +839,7 @@
         }
 
         function scrollToForm() {
+            document.getElementById('page-2').style.display = 'flex';
             document.getElementById('page-1').classList.add('turned');
         }
 
@@ -875,7 +878,7 @@
                         // Visa hemligt meddelande efter 1 sekund i mörkret
                         setTimeout(() => {
                             const msg = document.createElement('div');
-                            msg.innerHTML = "Plats: Lindevägen 16.<br>Tid: Från kl 17, 3 januari.<br>Kom totalt diskret.";
+                            msg.innerHTML = "Plats: Lindevägen 16, Enskede gård.<br>Tid: Från kl 17, 3 januari.<br>Kom totalt diskret.";
                             msg.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ddd; font-family: 'Courier New', Courier, monospace; text-align: center; opacity: 0; transition: opacity 3s ease; width: 90%; font-size: 1.2rem; line-height: 1.6;";
                             document.body.appendChild(msg);
                             
@@ -890,51 +893,47 @@
         // --- INTRO SEQUENCE LOGIC ---
         window.addEventListener('load', runIntroSequence);
 
-        function runIntroSequence() {
+        async function runIntroSequence() {
             const container = document.getElementById('intro-content');
             const texts = [
                 "Du har blivit utvald.",
                 "Utvald till ett uppdrag av väsentlig nationell, samt internationell, vikt.",
-                "Observera att obehörigt röjande av informationen enligt gällande praxis hanteras som landsförräderi.<br><br>Är du <span style='opacity:0; transition:opacity 2s 1s'>helt</span> <span style='opacity:0; transition:opacity 2s 2.5s'>säker att du vill ta del av föreliggande material?</span>"
+                "Observera att obehörigt röjande av informationen hanteras som landsförräderi.",
+                "Är du helt säker att du vill ta del av föreliggande material?"
             ];
 
-            let delay = 1000;
+            // Skapa text-elementet
+            const p = document.createElement('div');
+            p.className = 'intro-text';
+            container.appendChild(p);
 
-            texts.forEach((text, index) => {
-                setTimeout(() => {
-                    const p = document.createElement('div');
-                    p.className = 'intro-text';
-                    p.innerHTML = text;
-                    container.appendChild(p);
-                    
-                    // Trigger reflow
-                    void p.offsetWidth;
-                    p.style.opacity = 1;
+            for (let i = 0; i < texts.length; i++) {
+                p.innerHTML = texts[i];
+                
+                // Tona in
+                p.style.opacity = 1;
 
-                    // Handle internal spans for the last sentence
-                    if (index === 2) {
-                        const spans = p.querySelectorAll('span');
-                        spans.forEach(span => {
-                            setTimeout(() => span.style.opacity = 1, 100);
-                        });
-                    }
+                // Vänta: 2s (fade in) + 3s (lästid) = 5s
+                await new Promise(r => setTimeout(r, 5000));
 
-                }, delay);
-                delay += 4000; // Wait time between sentences
-            });
+                if (i < texts.length - 1) {
+                    // Tona ut
+                    p.style.opacity = 0;
+                    // Vänta: 2s (fade out)
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+            }
 
-            // Show buttons after text
-            setTimeout(() => {
-                const btnContainer = document.createElement('div');
-                btnContainer.className = 'intro-buttons';
-                btnContainer.innerHTML = `
-                    <button class="intro-btn" onclick="startMainSequence()">JA</button>
-                    <button class="intro-btn" onclick="rejectMission()">NEJ</button>
-                `;
-                container.appendChild(btnContainer);
-                void btnContainer.offsetWidth;
-                btnContainer.style.opacity = 1;
-            }, delay + 2000);
+            // Visa knappar
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'intro-buttons';
+            btnContainer.innerHTML = `
+                <button class="intro-btn" onclick="startMainSequence()">JA</button>
+                <button class="intro-btn" onclick="rejectMission()">NEJ</button>
+            `;
+            container.appendChild(btnContainer);
+            void btnContainer.offsetWidth;
+            btnContainer.style.opacity = 1;
         }
 
         function startMainSequence() {
