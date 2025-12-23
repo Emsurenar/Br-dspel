@@ -307,6 +307,7 @@
 
         #page-1 {
             justify-content: space-between; /* Text i toppen, pil i botten */
+            cursor: pointer; /* Indikera att man kan klicka för att gå vidare */
         }
 
         #page-2 {
@@ -617,15 +618,15 @@
             <!-- Pappret inuti -->
             <div class="paper-sheet">
                 <!-- SIDA 1: Briefing -->
-                <div id="page-1" class="page-section">
+                <div id="page-1" class="page-section" onclick="scrollToForm()">
                     <div id="typewriter-container" class="typewriter-text"></div>
-                    <div id="scroll-hint" class="scroll-hint" onclick="scrollToForm()">▼ BLÄDDRA TILL NÄSTA SIDA ▼</div>
+                    <div id="scroll-hint" class="scroll-hint">▼ BLÄDDRA TILL NÄSTA SIDA ▼</div>
                 </div>
 
                 <!-- SIDA 2: Formulär -->
                 <div id="page-2" class="page-section">
                     <div class="mission-form">
-                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="64" height="90.8" frameborder="0" marginheight="0" marginwidth="0">Läser in …</iframe>
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeCUxG5geXDdrCG9URQht-5y2zaBVieY36ua8_QPqOwG3puNQ/viewform?embedded=true" width="64" height="908" frameborder="0" marginheight="0" marginwidth="0">Läser in …</iframe>
                         <button onclick="triggerDestructionSequence()" class="submit-stamp">BEKRÄFTA INSKICKAT & FÖRSTÖR</button>
                     </div>
                 </div>
