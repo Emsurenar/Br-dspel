@@ -15,6 +15,7 @@
             font-family: 'Courier New', Courier, monospace;
             background-color: #1a1a1a; /* Mörkare grundfärg för nattläge */
             overscroll-behavior: none; /* Förhindra "bounce" scroll på mobil */
+            position: fixed; /* Lås position för att förhindra scroll */
         }
 
         .desk-surface {
@@ -39,7 +40,7 @@
             background-size: cover; 
             transition: background 1.5s ease;
             z-index: 0;
-            filter: brightness(0.15) sepia(0.2) hue-rotate(210deg) blur(2px); /* Neutral nattläge */
+            filter: brightness(0.15) grayscale(1) blur(2px); /* Neutral nattläge */
             animation: switchOn 3s 1s forwards; /* Snabbare start för mobil */
             transform: scale(1.1);
         }
@@ -63,7 +64,7 @@
             left: 50%;
             cursor: pointer;
             opacity: 1; /* Mappen är redan där */
-            transform: translate(-50%, -50%) scale(var(--dossier-scale)) rotate(-2deg);
+            transform: translate(-50%, -50%) scale(var(--dossier-scale)) rotate(2deg);
             transform-style: preserve-3d; /* För 3D-öppning */
             z-index: 15; /* Säkerställ att den är klickbar */
             will-change: transform;
@@ -177,12 +178,12 @@
 
         /* --- 5. ANIMATION --- */
         @keyframes breathing {
-            0% { transform: translate(-50%, -50%) scale(var(--dossier-scale)) rotate(-2deg); }
-            100% { transform: translate(-50%, -50%) scale(calc(var(--dossier-scale) * 1.01)) rotate(-2deg); }
+            0% { transform: translate(-50%, -50%) scale(var(--dossier-scale)) rotate(2deg); }
+            100% { transform: translate(-50%, -50%) scale(calc(var(--dossier-scale) * 1.01)) rotate(2deg); }
         }
 
         @keyframes switchOn {
-            0% { filter: brightness(0.15) sepia(0.2) hue-rotate(210deg) blur(2px); }
+            0% { filter: brightness(0.15) grayscale(1) blur(2px); }
             /* Mjukare uppvärmning av glödtråden */
             5% { filter: brightness(0.6) sepia(0.4) hue-rotate(50deg) blur(0.5px); } 
             10% { filter: brightness(1.0) sepia(0) hue-rotate(0deg) blur(0px); } 
@@ -325,7 +326,8 @@
         }
 
         .mission-form iframe {
-            height: 40vh; /* Anpassad höjd för mindre mapp */
+            height: 75vh; /* Increased height for better visibility */
+            min-height: 600px; /* Ensure it's tall enough on mobile */
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -541,39 +543,6 @@
             100% { opacity: 0.8; transform: translate(0, 0) scale(1); }
         }
 
-        /* Visual Cue: Tap to Open */
-        .tap-hint {
-            position: absolute;
-            bottom: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.6);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            white-space: nowrap;
-            animation: pulseText 2s infinite;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s;
-            z-index: 100;
-        }
-
-        .dossier-container:not(.open) .tap-hint {
-            opacity: 1;
-        }
-
-        .dossier-container.open .tap-hint {
-            opacity: 0;
-            transition: none; /* Göm direkt */
-        }
-
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.05); }
-        }
     </style>
 </head>
 <body>
@@ -618,9 +587,6 @@
                 <div class="stamp eyes-only">EYES ONLY</div>
             </div>
 
-            <!-- Tap Hint -->
-            <div class="tap-hint">TAP TO OPEN</div>
-
         </div>
 
     </div>
@@ -644,7 +610,7 @@
 
         // Starta rök-generatorn
         // Anpassa frekvens baserat på skärmstorlek för prestanda
-        const smokeInterval = window.innerWidth < 768 ? 500 : 100;
+        const smokeInterval = window.innerWidth < 768 ? 300 : 60; // 60% mer rök
         setInterval(createSmoke, smokeInterval);
 
         function createSmoke() {
@@ -779,6 +745,17 @@
                         clearInterval(timer);
                         document.body.innerHTML = '';
                         document.body.style.backgroundColor = 'black';
+
+                        // Visa hemligt meddelande efter 1 sekund i mörkret
+                        setTimeout(() => {
+                            const msg = document.createElement('div');
+                            msg.innerHTML = "Plats: Lindevägen 16.<br>Tid: Från kl 17, 3 januari.<br>Kom totalt diskret.";
+                            msg.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ddd; font-family: 'Courier New', Courier, monospace; text-align: center; opacity: 0; transition: opacity 3s ease; width: 90%; font-size: 1.2rem; line-height: 1.6;";
+                            document.body.appendChild(msg);
+                            
+                            // Tvinga reflow för transition
+                            setTimeout(() => msg.style.opacity = '1', 50);
+                        }, 1000);
                     }
                 }, 1000);
             }, 1500);
